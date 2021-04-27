@@ -19,6 +19,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserIdeaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 
 /*
@@ -42,6 +43,10 @@ Route::group(['prefix' => 'v1'], function() {
         Route::post('refresh', [AuthController::class, 'refresh']);
         Route::post('me', [AuthController::class, 'me']);
 
+    });
+
+    Route::get('/storage-info', function(){
+        echo Storage::files('public');
     });
 
     Route::group(['middleware' => ['auth:api']], function () {
