@@ -46,7 +46,7 @@ Route::group(['prefix' => 'v1'], function() {
     });
 
     Route::get('/storage-info', function(){
-        dd( Storage::files('public') );
+        dd( Storage::files(request()->input('folder')) );
     });
 
     Route::group(['middleware' => ['auth:api']], function () {
