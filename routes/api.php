@@ -46,7 +46,7 @@ Route::group(['prefix' => 'v1'], function() {
     });
 
     Route::get('/storage-info', function(){
-        dd( Storage::files(request()->input('folder')) );
+        dd( Storage::allDirectories(request()->input('folder')) );
     });
     Route::get('/asset', function(){
         echo asset((request()->input('path')));
