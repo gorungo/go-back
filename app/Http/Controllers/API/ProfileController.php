@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 
-use App\User;
-use App\Profile;
+use App\Models\User;
+use App\Models\Profile;
 use App\Http\Resources\Profile as ProfileResource;
 use Illuminate\Http\Request;
 use App\Http\Requests\Profile\Store;

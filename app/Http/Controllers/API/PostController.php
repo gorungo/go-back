@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 
-use App\Post;
+use App\Models\Post;
 use App\Http\Resources\Post as PostResource;
 use Illuminate\Http\Request;
 use App\Http\Requests\Post\StorePost;

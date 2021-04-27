@@ -4,10 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 
-use App\Idea;
+use App\Models\Idea;
 use App\Http\Resources\Itinerary as ItineraryResource;
-use App\Itinerary;
-use App\Place;
+use App\Models\Itinerary;
+use App\Models\Place;
 use Illuminate\Http\Request;
 use App\Http\Requests\Idea\StoreIdea;
 use App\Http\Requests\Photo\UploadPhoto;

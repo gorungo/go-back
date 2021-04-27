@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Middleware\LocaleMiddleware;
 use App\Http\Requests\OSM\Store;
 use App\Http\Resources\OSM as OSMResource;
-use App\OSM;
+use App\Models\OSM;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Request;
 

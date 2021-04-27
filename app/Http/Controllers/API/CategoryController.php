@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Category;
+use App\Models\Category;
 use App\Http\Requests\Category\StoreCategory;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Category as CategoryResource;

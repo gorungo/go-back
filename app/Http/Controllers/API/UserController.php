@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 
 use App\Http\Requests\User\Store;
-use App\User;
+use App\Models\User;
 use App\Http\Requests\User\SetNewPassword;
 use App\Http\Resources\User as UserResource;
 use App\Http\Resources\Idea as IdeaResource;

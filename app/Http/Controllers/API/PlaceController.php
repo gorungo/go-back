@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Place;
+use App\Models\Place;
 use Illuminate\Http\Request;
 use App\Http\Requests\Filter\GetFilterItems;
 use App\Http\Requests\Place\StorePlace;

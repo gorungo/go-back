@@ -4,10 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 
-use App\Idea;
+use App\Models\Idea;
 use App\Http\Resources\Date as DateResource;
-use App\Itinerary;
-use App\Place;
+use App\Models\Itinerary;
+use App\Models\Place;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\Idea\StoreIdea;

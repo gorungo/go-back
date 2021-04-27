@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Currency;
+use App\Models\Currency;
 use App\Http\Resources\Currency as CurrencyResource;
 
 

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 
-use App\Action;
+use App\Models\Action;
 use App\Http\Resources\Action as ActionResource;
 use Illuminate\Http\Request;
 use App\Http\Requests\Action\StoreAction;
