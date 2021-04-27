@@ -49,7 +49,7 @@ Route::group(['prefix' => 'v1'], function() {
         dd( Storage:: allFiles(request()->input('folder')) );
     });
     Route::get('/asset', function(){
-        echo asset((request()->input('path')));
+        echo Storage::url((request()->input('path')));
     });
 
     Route::group(['middleware' => ['auth:api']], function () {
