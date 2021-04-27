@@ -1,11 +1,25 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\CurrencyController;
+use App\Http\Controllers\API\FilterController;
 use App\Http\Controllers\API\IdeaController;
+use App\Http\Controllers\API\IdeaDateController;
+use App\Http\Controllers\API\IdeaItineraryController;
+use App\Http\Controllers\API\OSMController;
+use App\Http\Controllers\API\PlaceController;
 use App\Http\Controllers\API\ProfileController;
+use App\Http\Controllers\API\Photo\IdeaController as PhotoIdeaController;
+use App\Http\Controllers\API\Photo\ProfileController as PhotoProfileController;
+use App\Http\Controllers\API\Photo\PlaceController as PhotoPlaceController;
+use App\Http\Controllers\API\Photo\ItineraryController as PhotoItineraryController;
+use App\Http\Controllers\API\TagController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\UserIdeaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -62,74 +76,13 @@ Route::group(['prefix' => 'v1'], function() {
 
         Route::resource('ideas', IdeaController::class);
 
-        // places
-        Route::get('/places/create', 'API\PlaceController@create')->name('api.places.create');
-        Route::get('/places/{place}/edit', 'API\PlaceController@edit')->name('api.places.edit');
-        Route::post('/places', 'API\PlaceController@store')->name('api.places.store');
-        Route::patch('/places/{place}', 'API\PlaceController@update')->name('api.places.update');
-        Route::delete('/places/{place}', 'API\PlaceController@destroy')->name('api.places.destroy');
+        Route::resource('places', PlaceController::class);
 
-        // OpenStreetMap
-        Route::get('/osm/{osm}/edit', 'API\OSMController@edit')->name('api.osm.edit');
-        Route::post('/osm', 'API\OSMController@store')->name('api.osm.store');
-        Route::patch('/osm/{place}', 'API\OSMController@update')->name('api.osm.update');
-        Route::delete('/osm/{place}', 'API\OSMController@destroy')->name('api.osm.destroy');
+        Route::resource('osm', OsmController::class);
 
+        Route::resource('categories', CategoryController::class);
 
-        // categories
-        Route::get('/categories/create', 'API\CategoryController@create')->name('api.category.create');
-        Route::get('/categories/{category}/edit', 'API\CategoryController@edit')->name('api.category.edit');
-        Route::post('/categories', 'API\CategoryController@store')->name('api.category.store');
-        Route::patch('/categories/{category}', 'API\CategoryController@update')->name('api.category.update');
-        Route::delete('/categories/{category}', 'API\CategoryController@destroy')->name('api.category.destroy');
-
-
-        // tags
-        Route::get('/tags/allMain', 'API\TagController@allMainTagsCollection')->name('api.tags.all_main_tags_collection');
-
-
-        /*
-         * -------------------------------------------------------------------------
-         * ACTIONS PHOTOS ROUTING
-         * -------------------------------------------------------------------------
-         */
-
-        //Get listing of photos
-        Route::get('/posts/{post}/photos', "API\Photo\ActionController@index")
-            ->name('api.posts.photos_index');
-
-        //Upload photo
-        Route::post('/posts/{post}/photos', 'API\Photo\ActionController@upload')
-            ->name('api.posts.photos_upload');
-
-        //Set item main photos
-        Route::patch('/posts/{post}/photos/{photo}/set_main', 'API\Photo\ActionController@setMain')
-            ->name('api.posts.photos_set_main');
-
-        //Delete item main photos
-        Route::delete('/posts/{post}/photos/{photo}', 'API\Photo\ActionController@destroy')
-            ->name('api.posts.photos_destroy');
-        /*
-         * -------------------------------------------------------------------------
-         * ACTIONS PHOTOS ROUTING
-         * -------------------------------------------------------------------------
-         */
-
-        //Get listing of photos
-        Route::get('/actions/{action}/photos', "API\Photo\ActionController@index")
-            ->name('api.actions.photos_index');
-
-        //Upload photo
-        Route::post('/actions/{action}/photos', 'API\Photo\ActionController@upload')
-            ->name('api.actions.photos_upload');
-
-        //Set item main photos
-        Route::patch('/actions/{action}/photos/{photo}/set_main', 'API\Photo\ActionController@setMain')
-            ->name('api.actions.photos_set_main');
-
-        //Delete item main photos
-        Route::delete('/actions/{action}/photos/{photo}', 'API\Photo\ActionController@destroy')
-            ->name('api.actions.photos_destroy');
+        Route::get('/tags/allMain', [TagController::class, 'allMainTagsCollection'])->name('api.tags.all_main_tags_collection');
 
         /*
          * -------------------------------------------------------------------------
@@ -138,22 +91,22 @@ Route::group(['prefix' => 'v1'], function() {
          */
 
         //Get listing of photos
-        Route::get('/ideas/{idea}/photos', "API\Photo\IdeaController@index")
+        Route::get('/ideas/{idea}/photos', [PhotoIdeaController::class, 'index'])
             ->name('api.ideas.photos_index');
 
         //Upload photo
-        Route::post('/ideas/{idea}/photos', 'API\Photo\IdeaController@upload')
+        Route::post('/ideas/{idea}/photos', [PhotoIdeaController::class, 'upload'])
             ->name('api.ideas.photos_upload');
 
         //Set item main photos
-        Route::patch('/ideas/{idea}/photos/{photo}/set_main', 'API\Photo\IdeaController@setMain')
+        Route::patch('/ideas/{idea}/photos/{photo}/set_main', [PhotoIdeaController::class, 'setMain'])
             ->name('api.ideas.photos_set_main');
 
         //Delete item main photos
-        Route::delete('/ideas/{idea}/photos/{photo}', 'API\Photo\IdeaController@destroy')
+        Route::delete('/ideas/{idea}/photos/{photo}', [PhotoIdeaController::class, 'destroy'])
             ->name('api.ideas.photos_destroy');
 
-        Route::resource('users.ideas', 'API\UserIdeaController');
+        Route::resource('users.ideas', UserIdeaController::class);
 
         /*
          * -------------------------------------------------------------------------
@@ -162,23 +115,23 @@ Route::group(['prefix' => 'v1'], function() {
          */
 
         //Get listing of photos
-        Route::get('/itineraries/{itinerary}/photos', "API\Photo\ItineraryController@index")
+        Route::get('/itineraries/{itinerary}/photos', [PhotoItineraryController::class, 'index'])
             ->name('api.itineraries.photos_index');
 
         //Upload photo
-        Route::post('/itineraries/{itinerary}/photos', 'API\Photo\ItineraryController@upload')
+        Route::post('/itineraries/{itinerary}/photos', [PhotoItineraryController::class, 'upload'])
             ->name('api.itineraries.photos_upload');
 
         //Upload and set main photo
-        Route::post('/itineraries/{itinerary}/photo', 'API\Photo\ItineraryController@uploadMain')
+        Route::post('/itineraries/{itinerary}/photo', [PhotoItineraryController::class, 'uploadMain'])
             ->name('api.itineraries.photos_upload');
 
         //Set item main photos
-        Route::patch('/itineraries/{itinerary}/photos/{photo}/set_main', 'API\Photo\ItineraryController@setMain')
+        Route::patch('/itineraries/{itinerary}/photos/{photo}/set_main', [PhotoItineraryController::class, 'setMain'])
             ->name('api.itineraries.photos_set_main');
 
         //Delete item main photos
-        Route::delete('/itineraries/{itinerary}/photos/{photo}', 'API\Photo\ItineraryController@destroy')
+        Route::delete('/itineraries/{itinerary}/photos/{photo}', [PhotoItineraryController::class, 'destroy'])
             ->name('api.itineraries.photos_destroy');
 
         /*
@@ -188,19 +141,19 @@ Route::group(['prefix' => 'v1'], function() {
          */
 
         //Get listing of photos
-        Route::get('/places/{place}/photos', "API\Photo\PlaceController@index")
+        Route::get('/places/{place}/photos', [PhotoPlaceController::class, 'index'])
             ->name('api.ideas.photos_index');
 
         //Upload photo
-        Route::post('/places/{place}/photos', 'API\Photo\PlaceController@upload')
+        Route::post('/places/{place}/photos', [PhotoPlaceController::class, 'upload'])
             ->name('api.ideas.photos_upload');
 
         //Set item main photos
-        Route::patch('/places/{place}/photos/{photo}/set_main', 'API\Photo\PlaceController@setMain')
+        Route::patch('/places/{place}/photos/{photo}/set_main', [PhotoPlaceController::class, 'setMain'])
             ->name('api.ideas.photos_set_main');
 
         //Delete item main photos
-        Route::delete('/places/{place}/photos/{photo}', 'API\Photo\PlaceController@destroy')
+        Route::delete('/places/{place}/photos/{photo}', [PhotoPlaceController::class, 'destroy'])
             ->name('api.ideas.photos_destroy');
 
 
@@ -211,26 +164,26 @@ Route::group(['prefix' => 'v1'], function() {
          */
 
         //Get listing of photos
-        Route::get('/profiles/{profile}/photos', "API\Photo\ProfileController@index")
+        Route::get('/profiles/{profile}/photos', [PhotoProfileController::class, 'index'])
             ->name('api.profiles.photos_index');
 
         //Upload photo
-        Route::post('/profiles/{profile}/photos', 'API\Photo\ProfileController@upload')
+        Route::post('/profiles/{profile}/photos', [PhotoProfileController::class, 'upload'])
             ->name('api.profiles.photos_upload');
 
         //Set item main photos
-        Route::patch('/profiles/{profile}/photos/{photo}/set_main', 'API\Photo\ProfileController@setMain')
+        Route::patch('/profiles/{profile}/photos/{photo}/set_main', [PhotoProfileController::class, 'setMain'])
             ->name('api.profiles.photos_set_main');
 
         //Delete item main photos
-        Route::delete('/profiles/{profile}/photos/{photo}', 'API\Photo\ProfileController@destroy')
+        Route::delete('/profiles/{profile}/photos/{photo}', [PhotoProfileController::class, 'destroy'])
             ->name('api.profiles.photos_destroy');
 
         // User
-        Route::resource('users', 'API\UserController');
+        Route::resource('users', UserController::class);
 
         // Profile
-        Route::resource('profiles', 'API\ProfileController');
+        Route::resource('profiles', ProfileController::class);
 
     });
 
@@ -241,47 +194,46 @@ Route::group(['prefix' => 'v1'], function() {
      */
 
     //Get listing of places by title
-    Route::get('/places/getByTitle', "API\PlaceController@getByTitle")
+    Route::get('/places/getByTitle', [PlaceController::class, 'getByTitle'])
         ->name('api.place.get_by_title');
 
     //Get listing of regions and cities by title
-    Route::get('/places/getRegionOrCityByTitle', "API\PlaceController@getRegionOrCityByTitle")
+    Route::get('/places/getRegionOrCityByTitle', [PlaceController::class, 'getRegionOrCityByTitle'])
         ->name('api.place.get_region_or_city_by_title');
 
     //Get listing of places by title
-    Route::get('/ideas/getByTitle', "API\IdeaController@getByTitle")
+    Route::get('/ideas/getByTitle', [IdeaController::class, 'getByTitle'])
         ->name('api.idea.get_by_title');
 
     //Get listing of places by title
-    Route::get('/ideas/main', "API\IdeaController@getMain")
+    Route::get('/ideas/main', [IdeaController::class, 'getMain'])
         ->name('api.idea.main');
 
-    Route::get('/ideas/randomIdea', 'API\IdeaController@randomIdea')->name('api.ideas.random_idea');
+    Route::get('/ideas/randomIdea', [IdeaController::class, 'randomIdea'])->name('api.ideas.random_idea');
 
     // filters
 
-    Route::get('/filters/{filter}/activeItems', "API\FilterController@activeItems")
+    Route::get('/filters/{filter}/activeItems', [FilterController::class, 'activeItems'])
         ->name('api.filters.active_items');
 
     // currencies
-    Route::get('/currencies', "API\CurrencyController@index")
-        ->name('api.currencies.index');
+    Route::get('/currencies', [CurrencyController::class, 'index'])->name('api.currencies.index');
 
     // OpenStreetMap
-    Route::get('/osm/search', "API\OSMController@search")->name('api.osm.search');
-    Route::get('/osm/{osm}', "API\OSMController@view")->name('api.osm.view');
-    Route::post('/osm/saveSelected', 'API\OSMController@saveSelected')->name('api.osm.store');
+    Route::get('/osm/search', [OSMController::class, 'search'])->name('api.osm.search');
+    Route::get('/osm/{osm}', [OSMController::class, 'view'])->name('api.osm.view');
+    Route::post('/osm/saveSelected', [OSMController::class, 'saveSelected'])->name('api.osm.store');
 
     // Ideas
 
     Route::get('ideas', [IdeaController::class, 'index'])->name('api.ideas');
-    Route::get('/ideas/{idea}', 'API\IdeaController@show')->name('api.ideas.show');
+    Route::get('/ideas/{idea}', [IdeaController::class, 'show'])->name('api.ideas.show');
 
     // Idea itinerary
-    Route::resource('ideas.itineraries', 'API\IdeaItineraryController');
+    Route::resource('ideas.itineraries', IdeaItineraryController::class);
 
     // Idea date
-    Route::resource('ideas.dates', 'API\IdeaDateController');
+    Route::resource('ideas.dates', IdeaDateController::class);
 
     // Categories
     Route::get('/categories', 'API\CategoryController@index')->name('api.category.index');
