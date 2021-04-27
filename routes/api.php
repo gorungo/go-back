@@ -48,6 +48,9 @@ Route::group(['prefix' => 'v1'], function() {
     Route::get('/storage-info', function(){
         dd( Storage::files(request()->input('folder')) );
     });
+    Route::get('/storage-path', function(){
+        echo storage_path(request()->input('path'));
+    });
 
     Route::group(['middleware' => ['auth:api']], function () {
 
