@@ -12,7 +12,7 @@ trait Imageble
 
     public function photos()
     {
-        return $this->morphMany('App\Photo', 'item');
+        return $this->morphMany('App\Models\Photo', 'item');
     }
 
     public function uploadPhoto(UploadPhoto $request)
