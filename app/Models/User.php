@@ -173,14 +173,11 @@ class User extends Authenticatable implements JWTSubject
                 }catch(\Exception $exception){
                     Log::info('https://ipinfo.io/geo service unavailable');
                 }
-
-
             }
         }
 
 
-
-        return new Point($coordinates['lng'], $coordinates['lat']);
+        return $coordinates ? new Point($coordinates['lng'], $coordinates['lat']) : null;
     }
 
     public function updateAndSync(Store $request)
