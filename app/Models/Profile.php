@@ -47,9 +47,7 @@ class Profile extends Model
     {
         $src = null;
 
-        if ($this->thmb_file_name) {
-            $src = Storage::disk('images')->url(mb_strtolower(class_basename(get_class($this))) . '/' . $this->id . '/' . htmlspecialchars(strip_tags($this->thmb_file_name)));
-        };
+        $src = Storage::disk('images')->url(mb_strtolower(class_basename(get_class($this))) . '/' . $this->id . '/' . htmlspecialchars(strip_tags($this->thmb_file_name)));
 
         return $src;
     }
