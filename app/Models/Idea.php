@@ -486,7 +486,7 @@ class Idea extends Model
     {
         return $this
             ->belongsToMany('App\Models\Category', 'idea_category')
-            ->using('App\Pivots\Category');
+            ->using('App\Models\Pivots\Category');
     }
 
     public function approve()

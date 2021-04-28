@@ -153,7 +153,7 @@ class Category extends Model
 
     public function categoryIdeas()
     {
-        return $this->belongsToMany('App\Models\Idea')->using('App\Pivots\Category');
+        return $this->belongsToMany('App\Models\Idea')->using('App\Models\Pivots\Category');
     }
 
     public function categoryActions()
