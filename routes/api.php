@@ -82,14 +82,6 @@ Route::group(['prefix' => 'v1'], function() {
         Route::patch('/ideas/{idea}/validate', [IdeaController::class, 'validateIdea'])->name('api.ideas.validate');
         //Route::delete('/ideas/{idea}', 'API\IdeaController@destroy')->name('api.ideas.destroy');
 
-        Route::resource('ideas', IdeaController::class);
-
-        Route::resource('places', PlaceController::class);
-
-        Route::resource('osm', OsmController::class);
-
-        Route::resource('categories', CategoryController::class);
-
         Route::get('/tags/allMain', [TagController::class, 'allMainTagsCollection'])->name('api.tags.all_main_tags_collection');
 
         /*
@@ -231,6 +223,11 @@ Route::group(['prefix' => 'v1'], function() {
     Route::get('/osm/search', [OSMController::class, 'search'])->name('api.osm.search');
     Route::get('/osm/{osm}', [OSMController::class, 'view'])->name('api.osm.view');
     Route::post('/osm/saveSelected', [OSMController::class, 'saveSelected'])->name('api.osm.store');
+
+    Route::resource('ideas', IdeaController::class);
+    Route::resource('places', PlaceController::class);
+    Route::resource('osm', OsmController::class);
+    Route::resource('categories', CategoryController::class);
 
     // Ideas
 
