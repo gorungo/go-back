@@ -186,6 +186,7 @@ return [
         Grimzy\LaravelMysqlSpatial\SpatialServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         \Conner\Tagging\Providers\TaggingServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
     ],
 
