@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\API\Photo;
 
-use App\Idea;
-use App\Photo;
+use App\Models\Idea;
+use App\Models\Photo;
 use App\Http\Requests\Photo\UploadPhoto;
 use App\Http\Requests\Photo\SetMainPhoto;
 use Illuminate\Http\Request;

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\API\Photo;
 use App\Http\Controllers\Controller;
 
-use App\Profile;
-use App\Photo;
+use App\Models\Profile;
+use App\Models\Photo;
 use App\Http\Requests\Photo\SetMainPhoto;
 use App\Http\Requests\Photo\UploadProfilePhoto;
 

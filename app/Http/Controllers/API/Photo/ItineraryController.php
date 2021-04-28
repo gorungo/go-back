@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\API\Photo;
 
-use App\Idea;
-use App\Itinerary;
-use App\Photo;
+use App\Models\Idea;
+use App\Models\Itinerary;
+use App\Models\Photo;
 use App\Http\Requests\Photo\UploadPhoto;
 use App\Http\Requests\Photo\DestroyPhoto;
 use App\Http\Requests\Photo\SetMainPhoto;
