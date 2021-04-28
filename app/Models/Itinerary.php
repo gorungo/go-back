@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Kyslik\ColumnSortable\Sortable;
+use Illuminate\Support\Str;
 
 class Itinerary extends Model
 {
@@ -112,7 +113,7 @@ class Itinerary extends Model
         $newPhoto = null;
 
         $image = $request->file('image');
-        $rnd = str_random(5);
+        $rnd = Str::random(5);
 
         $newFileNameBig = mb_strtolower('img' . $rnd . '.' . $image->getClientOriginalExtension());
         $newFileNameSmall = mb_strtolower('img' . $rnd . '_sml.' . $image->getClientOriginalExtension());

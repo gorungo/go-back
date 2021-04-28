@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Image;
+use Illuminate\Support\Str;
 
 class Profile extends Model
 {
@@ -75,7 +76,7 @@ class Profile extends Model
         $newPhoto = null;
 
         $image = $request->file('image');
-        $rnd = str_random(5);
+        $rnd = Str::random(5);
 
         $newFileNameBig = mb_strtolower('img'.$rnd.'.'.$image->getClientOriginalExtension());
         $newFileNameSmall = mb_strtolower('img'.$rnd.'_sml.'.$image->getClientOriginalExtension());

@@ -9,6 +9,7 @@ use App\Http\Requests\Photo\UploadPhoto;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Photo extends Model
 {
@@ -87,7 +88,7 @@ class Photo extends Model
             $this->modelName = ucfirst(explode('\\', get_class( $model ) )[1]);
 
             $image = $request->file('image');
-            $newFileName = mb_strtolower('img' . str_random(5) . '.' . $image->getClientOriginalExtension());
+            $newFileName = mb_strtolower('img' . Str::random(5) . '.' . $image->getClientOriginalExtension());
             $uploadPath = $this->getStoreDirectoryUrl( $model->id ) . '/' . $newFileName;
 
             // сохраняем изображение на диске в нужной папке, если нужно ресайзим
@@ -215,7 +216,7 @@ class Photo extends Model
 
             list($txt, $ext) = explode(".", $this->img_name);
 
-            $newMainPhotoFileName = 'tmb' . str_random(5) . '.' . $ext;
+            $newMainPhotoFileName = 'tmb' . Str::random(5) . '.' . $ext;
 
             if($this->item_type == 'Post'){
                 $img->fit(400,300);
@@ -256,7 +257,7 @@ class Photo extends Model
         $newPhoto = null;
 
         $image = $request->file('image');
-        $rnd = str_random(5);
+        $rnd = Str::random(5);
 
         $newFileNameBig = mb_strtolower('img' . $rnd . '.' . $image->getClientOriginalExtension());
         $newFileNameSmall = mb_strtolower('img' . $rnd . '_sml.' . $image->getClientOriginalExtension());
