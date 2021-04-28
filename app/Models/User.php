@@ -15,13 +15,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable, HasRoles, Hashable;
+    use Notifiable, HasRoles, Hashable, HasFactory;
 
     const hidLength = 20;
-    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
