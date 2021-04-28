@@ -28,7 +28,7 @@ class User extends JsonResource
                 'profile_hid' => $this->profile->hid,
                 'display_name' => $this->displayName,
                 'image_url' => $this->imageUrl,
-                'image_url_2' => $this->TmbImgPath,
+                'image_url_2' => mb_strtolower(class_basename(get_class($this->profile))) . '/' . $this->profile->id . '/' . htmlspecialchars(strip_tags($this->thmb_file_name)),
                 'superuser' => Auth::user() ? $this->when(Auth::user()->hasAnyRole(['admin', 'super-admin']), true):null,
             ],
 

@@ -58,9 +58,6 @@ Route::group(['prefix' => 'v1'], function() {
             return ['result' => 'ok'];
         });
 
-
-
-
         // profiles
         Route::resource('profiles', ProfileController::class);
 
