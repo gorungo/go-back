@@ -47,8 +47,8 @@ class Profile extends Model
     {
         $src = null;
 
-        if ($this->thmb_file_name && Storage::disk('images')->exists( class_basename(mb_strtolower(get_class($this))) . '/' . $this->id . '/' . htmlspecialchars(strip_tags($this->thmb_file_name)))) {
-            $src = Storage::disk('images')->url(class_basename(mb_strtolower(get_class($this))) . '/' . $this->id . '/' . htmlspecialchars(strip_tags($this->thmb_file_name)));
+        if ($this->thmb_file_name && Storage::disk('images')->exists( mb_strtolower(class_basename(get_class($this))) . '/' . $this->id . '/' . htmlspecialchars(strip_tags($this->thmb_file_name)))) {
+            $src = Storage::disk('images')->url(mb_strtolower(class_basename(get_class($this))) . '/' . $this->id . '/' . htmlspecialchars(strip_tags($this->thmb_file_name)));
         };
 
         return $src;
