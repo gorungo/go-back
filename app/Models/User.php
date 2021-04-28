@@ -88,23 +88,7 @@ class User extends Authenticatable implements JWTSubject
      */
     Public function getTmbImgPathAttribute()
     {
-
-        $defaultTmb = null;
-
-        if ($this->profile && $this->profile->thmb_file_name != null) {
-            //если есть картинка вакансии
-            $src = 'profile/' . $this->profile->id . '/' . htmlspecialchars(strip_tags($this->profile->thmb_file_name));
-
-        } else {
-            //если есть картинка вакансии
-            $src = $defaultTmb;
-        }
-
-        if ($src && Storage::disk('images')->exists('profile/' . $this->profile->id . '/' . htmlspecialchars(strip_tags($this->profile->thmb_file_name)))) {
-            $src = Storage::disk('images')->url('profile/' . $this->profile->id . '/' . htmlspecialchars(strip_tags($this->profile->thmb_file_name)));
-        };
-
-        return $src;
+        return $this->profile->TmbImgPath ;
     }
 
     public function getImageUrlAttribute()

@@ -42,6 +42,7 @@ class Profile extends Model
         return $this->belongsTo('App\Models\User');
     }
 
+
     public function getTmbImgPathAttribute()
     {
         $src = null;
