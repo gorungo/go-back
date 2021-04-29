@@ -27,14 +27,14 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         Relation::morphMap([
-            'Category' => 'App\Category',
-            'Idea' => 'App\Idea',
-            'Photo' => 'App\Photo',
-            'Action' => 'App\Action',
-            'Place' => 'App\Place',
-            'Profile' => 'App\Profile',
-            'User' => 'App\User',
-            'Helper' => 'App\Helper',
+            'Category' => 'App\Models\Category',
+            'Idea' => 'App\Models\Idea',
+            'Photo' => 'App\Models\Photo',
+            'Action' => 'App\Models\Action',
+            'Place' => 'App\Models\Place',
+            'Profile' => 'App\Models\Profile',
+            'User' => 'App\Models\User',
+            'Helper' => 'App\Models\Helper',
 
             // 'как-храним' => 'класс',
         ]);

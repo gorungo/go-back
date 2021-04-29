@@ -75,7 +75,7 @@ class Photo extends Model
      */
 
     public function getStoragePathAttribute() {
-        return 'storage/images/' . mb_strtolower($this->item_type) . '/' . $this->item_id . '/' . $this->img_name;
+        return Storage::disk('images')->url(mb_strtolower($this->item_type) . '/' . $this->item_id . '/' . $this->img_name);
     }
 
 
