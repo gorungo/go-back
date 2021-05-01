@@ -20,6 +20,8 @@ class IdeaController extends Controller
     public function __construct(Idea $idea)
     {
         $this->idea = $idea;
+        $this->middleware('auth')->except(['index', 'show']);
+        $this->authorizeResource(Idea::class, 'idea');
     }
 
     /**
@@ -96,6 +98,7 @@ class IdeaController extends Controller
         ]));
     }
 
+
     /**
      * Store a newly created resource in storage.
      *
@@ -123,8 +126,13 @@ class IdeaController extends Controller
      */
     public function show(Idea $idea)
     {
+        if(request()->has('edit') && request()->input('edit') === '1'){
+            return new IdeaResource($idea->loadMissing(request()->has('include') && request()->input('include') != '' ? explode(',',
+                request()->include) : []));
+        }
         return new IdeaResource($idea->loadMissing(request()->has('include') && request()->input('include') != '' ? explode(',',
             request()->include) : []));
+
     }
 
     /**
@@ -175,12 +183,13 @@ class IdeaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  int  $hid
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy($idea)
     {
-        //
+        $idea->delete();
+        return response()->json('deleted', 200);
     }
 
 

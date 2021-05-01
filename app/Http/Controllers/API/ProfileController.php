@@ -20,6 +20,7 @@ class ProfileController extends Controller
     public function __construct(Profile $profile)
     {
         $this->profile = $profile;
+        $this->authorizeResource(Profile::class, 'profile');
     }
 
     /**
@@ -27,7 +28,7 @@ class ProfileController extends Controller
      */
     public function index(Request $request, User $user)
     {
-        return response()->json(ProfileResource($user->profile));
+        return response()->json(new ProfileResource($user->profile));
     }
 
     /**

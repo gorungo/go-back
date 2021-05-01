@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
-use App\Place;
+use App\Models\User;
+use App\Models\Place;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PlacePolicy
@@ -13,34 +13,34 @@ class PlacePolicy
     /**
      * Determine whether the user can view the place.
      *
-     * @param  \App\User  $user
-     * @param  \App\Place  $place
-     * @return mixed
+     * @param  User  $user
+     * @param  Place  $place
+     * @return bool
      */
     public function list(User $user)
     {
         return true;
-        return $user->hasPermissionTo('view places');
+        //return $user->hasPermissionTo('view places');
     }
 
     /**
      * Determine whether the user can view the place.
      *
-     * @param  \App\User  $user
-     * @param  \App\Place  $place
-     * @return mixed
+     * @param  User  $user
+     * @param  Place  $place
+     * @return bool
      */
     public function view(User $user, Place $place)
     {
         return true;
-        return $user->hasPermissionTo('view places');
+       // return $user->hasPermissionTo('view places');
     }
 
     /**
      * Determine whether the user can create places.
      *
-     * @param  \App\User  $user
-     * @return mixed
+     * @param  User  $user
+     * @return bool
      */
     public function create(User $user)
     {
@@ -50,9 +50,9 @@ class PlacePolicy
     /**
      * Determine whether the user can update the place.
      *
-     * @param  \App\User  $user
-     * @param  \App\Place  $place
-     * @return mixed
+     * @param  User  $user
+     * @param  Place  $place
+     * @return bool
      */
     public function update(User $user, Place $place)
     {
@@ -72,9 +72,9 @@ class PlacePolicy
     /**
      * Determine whether the user can delete the place.
      *
-     * @param  \App\User  $user
-     * @param  \App\Place  $place
-     * @return mixed
+     * @param  User  $user
+     * @param  Place  $place
+     * @return void
      */
     public function delete(User $user, Place $place)
     {
@@ -84,9 +84,9 @@ class PlacePolicy
     /**
      * Determine whether the user can restore the place.
      *
-     * @param  \App\User  $user
-     * @param  \App\Place  $place
-     * @return mixed
+     * @param  User  $user
+     * @param  Place  $place
+     * @return void
      */
     public function restore(User $user, Place $place)
     {
@@ -96,9 +96,9 @@ class PlacePolicy
     /**
      * Determine whether the user can permanently delete the place.
      *
-     * @param  \App\User  $user
-     * @param  \App\Place  $place
-     * @return mixed
+     * @param  User  $user
+     * @param  Place  $place
+     * @return void
      */
     public function forceDelete(User $user, Place $place)
     {

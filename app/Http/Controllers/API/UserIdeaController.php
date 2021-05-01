@@ -13,6 +13,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserIdeaController extends Controller
 {
@@ -28,11 +29,14 @@ class UserIdeaController extends Controller
      * Display a listing of the resource.
      * @param  Request  $request
      * @param  User  $user
-     * @return AnonymousResourceCollection
+     * @return JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Request $request, User $user)
     {
-        return IdeaResource::collection(
+        $this->authorize('update', $user);
+
+        return response()->json([ 'data' => IdeaResource::collection(
             $user->ideas()->where(function ($q) use ($request) {
                 if ($request->has('active')) {
                     $q->where('active', $request->active);
@@ -41,7 +45,24 @@ class UserIdeaController extends Controller
                     $q->whereNotNull('approved_at');
                 }
             })->paginate()->loadMissing(request()->has('include') && request()->input('include') != '' ? explode(',',
-                    request()->include) : [])
-        );
+                request()->include) : [])
+        )], 200);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     * @param  User  $user
+     * @return JsonResource
+     */
+    public function createAndGetEmptyIdea(User $user): JsonResource
+    {
+        return new JsonResource(Idea::createEmptyOfUser($user)->loadMissing([
+            'ideaPrice',
+            'ideaPlace',
+            'ideaPlacesToVisit',
+            'ideaDates',
+            'ideaCategories',
+            'ideaItineraries'
+        ]));
     }
 }

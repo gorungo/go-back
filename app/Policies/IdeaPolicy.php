@@ -2,39 +2,38 @@
 
 namespace App\Policies;
 
-use App\User;
-use App\Idea;
+use App\Models\User;
+use App\Models\Idea;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class IdeaPolicy
 {
     use HandlesAuthorization;
 
+    public function viewAny(?User $user)
+    {
+        return true;
+    }
+
     /**
      * Determine whether the user can view the idea.
      *
-     * @param  \App\User  $user
-     * @param  \App\Idea  $idea
+     * @param  User|null  $user
+     * @param  Idea  $idea
      * @return mixed
      */
     public function view(?User $user, Idea $idea)
     {
-        if($user){
-            if($user->hasPermissionTo('view ideas')){
-                // can see all published not blocked
-                if(!$idea->isBlocked && $idea->isPublished){
-                    return true;
+        if(request()->has('edit')){
+            if($user){
+                if($user->hasPermissionTo('edit own ideas')){
+                    return $idea->author_id === $user->id;
                 }
-
-                // can see all published and own unpublished or blocked
-                // can see all
-                return $this->viewUnpublished($user, $idea);
             }
-        }else{
-            // can see all published not blocked
-            if(!$idea->isBlocked && $idea->isPublished){
-                return true;
-            }
+        }
+        // can see all published not blocked
+        if(!$idea->isBlocked && $idea->isPublished){
+            return true;
         }
 
         return false;
@@ -43,9 +42,9 @@ class IdeaPolicy
     /**
      * Determine whether the user can view the unpublished action.
      *
-     * @param  \App\User  $user
-     * @param  \App\Idea  $idea
-     * @return mixed
+     * @param  User  $user
+     * @param  Idea  $idea
+     * @return bool
      */
     public function viewUnpublished(User $user, Idea $idea)
     {
@@ -65,7 +64,7 @@ class IdeaPolicy
     /**
      * Determine whether the user can create ideas.
      *
-     * @param  \App\User  $user
+     * @param  User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -76,8 +75,8 @@ class IdeaPolicy
     /**
      * Determine whether the user can create main ideas.
      *
-     * @param  \App\User  $user
-     * @return mixed
+     * @param  User  $user
+     * @return bool
      */
     public function createMainIdea(User $user)
     {
@@ -87,13 +86,34 @@ class IdeaPolicy
     /**
      * Determine whether the user can update the idea.
      *
-     * @param  \App\User  $user
-     * @param  \App\Idea  $idea
-     * @return mixed
+     * @param  User  $user
+     * @param  Idea  $idea
+     * @return bool
+     */
+    public function edit(User $user, Idea $idea)
+    {
+        // if can edit all ideas
+        if($user->hasPermissionTo('edit ideas')){
+            return true;
+        }
+
+        // if can edit own idea
+        if($user->hasPermissionTo('edit own ideas')){
+            return $idea->author_id === $user->id;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can update the idea.
+     *
+     * @param  User  $user
+     * @param  Idea  $idea
+     * @return bool
      */
     public function update(User $user, Idea $idea)
     {
-
         // if can edit all ideas
         if($user->hasPermissionTo('edit ideas')){
             return true;
@@ -110,21 +130,22 @@ class IdeaPolicy
     /**
      * Determine whether the user can delete the idea.
      *
-     * @param  \App\User  $user
-     * @param  \App\Idea  $idea
-     * @return mixed
+     * @param  User  $user
+     * @param  Idea  $idea
+     * @return bool
      */
     public function delete(User $user, Idea $idea)
     {
-        return $user->hasPermissionTo('delete ideas');
+        return $idea->author_id === $user->id;
+        return $user->hasPermissionTo('delete ideas') || $user->hasPermissionTo('delete own ideas');
     }
 
     /**
      * Determine whether the user can restore the idea.
      *
-     * @param  \App\User  $user
-     * @param  \App\Idea  $idea
-     * @return mixed
+     * @param  User  $user
+     * @param  Idea  $idea
+     * @return bool
      */
     public function restore(User $user, Idea $idea)
     {
@@ -134,9 +155,9 @@ class IdeaPolicy
     /**
      * Determine whether the user can permanently delete the idea.
      *
-     * @param  \App\User  $user
-     * @param  \App\Idea  $idea
-     * @return mixed
+     * @param  User  $user
+     * @param  Idea  $idea
+     * @return bool
      */
     public function forceDelete(User $user, Idea $idea)
     {

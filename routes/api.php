@@ -70,6 +70,8 @@ Route::group(['prefix' => 'v1'], function() {
         Route::get('/users/{user}/ideas', [UserController::class, 'ideas'])
             ->name('api.user.ideas');
 
+        Route::get('users/{user}/ideas/createAndGetEmpty', [UserIdeaController::class, 'createAndGetEmptyIdea'])->name('api.users.ideas.create_and_get_empty');
+
         // ideas
         Route::get('/ideas/{idea}/edit', [IdeaController::class, 'edit'])->name('api.ideas.edit');
         //Route::post('/ideas', 'API\IdeaController@store')->name('api.ideas.store');
@@ -176,12 +178,6 @@ Route::group(['prefix' => 'v1'], function() {
         Route::delete('/profiles/{profile}/photos/{photo}', [PhotoProfileController::class, 'destroy'])
             ->name('api.profiles.photos_destroy');
 
-        // User
-        Route::resource('users', UserController::class);
-
-        // Profile
-        Route::resource('profiles', ProfileController::class);
-
     });
 
     /*
@@ -225,23 +221,19 @@ Route::group(['prefix' => 'v1'], function() {
     Route::resource('places', PlaceController::class);
     Route::resource('osm', OsmController::class);
     Route::resource('categories', CategoryController::class);
+    Route::resource('users', UserController::class);
+    Route::resource('profiles', ProfileController::class);
 
     // Ideas
+    //Route::get('ideas/{idea}', [IdeaController::class, 'show'])->name('api.ideas.show');
 
-    Route::get('ideas', [IdeaController::class, 'index'])->name('api.ideas');
-    Route::get('/ideas/{idea}', [IdeaController::class, 'show'])->name('api.ideas.show');
-
-    // Idea itinerary
     Route::resource('ideas.itineraries', IdeaItineraryController::class);
-
-    // Idea date
     Route::resource('ideas.dates', IdeaDateController::class);
 
     // Categories
-    Route::get('/categories', 'API\CategoryController@index')->name('api.category.index');
-    Route::get('/categories/children', 'API\CategoryController@lastChildren')->name('api.category.last_children');
-    Route::get('/categories/{category}', 'API\CategoryController@show')->name('api.category.show');
-    Route::get('/categories/{categoryId}/fullcategorieslisting', 'Api\CategoryController@fullCategoriesListing')->name('api.category.fullcategorieslisting');
-    Route::get('/categories/{categoryId}/child', 'API\CategoryController@child')->name('api.category.child');
+    //Route::get('/categories/children', [CategoryController::class, 'lastChildren'])->name('api.category.last_children');
+    //Route::get('/categories/{category}', 'API\CategoryController@show')->name('api.category.show');
+    //Route::get('/categories/{categoryId}/fullcategorieslisting', 'Api\CategoryController@fullCategoriesListing')->name('api.category.fullcategorieslisting');
+    //Route::get('/categories/{categoryId}/child', 'API\CategoryController@child')->name('api.category.child');
 
 });

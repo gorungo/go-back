@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
-use App\Category;
+use App\Models\User;
+use App\Models\Category;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CategoryPolicy
@@ -13,9 +13,9 @@ class CategoryPolicy
     /**
      * Determine whether the user can view the category.
      *
-     * @param  \App\User  $user
-     * @param  \App\Category  $category
-     * @return mixed
+     * @param  User  $user
+     * @param  Category  $category
+     * @return bool
      */
     public function view(User $user, Category $category)
     {
@@ -25,8 +25,8 @@ class CategoryPolicy
     /**
      * Determine whether the user can create categories.
      *
-     * @param  \App\User  $user
-     * @return mixed
+     * @param  User  $user
+     * @return bool
      */
     public function create(User $user)
     {
@@ -36,9 +36,9 @@ class CategoryPolicy
     /**
      * Determine whether the user can update the category.
      *
-     * @param  \App\User  $user
-     * @param  \App\Category  $category
-     * @return mixed
+     * @param  User  $user
+     * @param  Category  $category
+     * @return bool
      */
     public function update(User $user, Category $category)
     {
@@ -48,9 +48,9 @@ class CategoryPolicy
     /**
      * Determine whether the user can delete the category.
      *
-     * @param  \App\User  $user
-     * @param  \App\Category  $category
-     * @return mixed
+     * @param  User  $user
+     * @param  Category  $category
+     * @return bool
      */
     public function delete(User $user, Category $category)
     {
@@ -60,9 +60,9 @@ class CategoryPolicy
     /**
      * Determine whether the user can restore the category.
      *
-     * @param  \App\User  $user
-     * @param  \App\Category  $category
-     * @return mixed
+     * @param  User  $user
+     * @param  Category  $category
+     * @return bool
      */
     public function restore(User $user, Category $category)
     {
@@ -72,9 +72,9 @@ class CategoryPolicy
     /**
      * Determine whether the user can permanently delete the category.
      *
-     * @param  \App\User  $user
-     * @param  \App\Category  $category
-     * @return mixed
+     * @param  User  $user
+     * @param  Category  $category
+     * @return bool
      */
     public function forceDelete(User $user, Category $category)
     {

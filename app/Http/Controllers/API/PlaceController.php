@@ -21,6 +21,8 @@ class PlaceController extends Controller
 
     public function __construct(Place $place)
     {
+        $this->middleware('auth')->except(['index', 'show']);
+
         $this->place = $place;
     }
 

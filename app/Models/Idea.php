@@ -38,10 +38,10 @@ class Idea extends Model
      * Create empty instance in database
      * @return Idea $newIdea
      */
-    public static function createEmpty()
+    public static function createEmptyOfUser(User $user): Idea
     {
         $newIdea = self::create([
-            'author_id' => User::activeUser()->id,
+            'author_id' => $user->id,
             'slug' => 'new_idea_slug',
         ]);
 
@@ -144,6 +144,11 @@ class Idea extends Model
             });
     }
 
+    public function getIsPublishedAttribute()
+    {
+        return $this->approved_at && $this->active === 1;
+    }
+
     public static function backgroundImage()
     {
         return null;
@@ -236,11 +241,6 @@ class Idea extends Model
             ->InFuture()
             ->whereHas('localisedIdeaDescription')
             ->isActive();
-    }
-
-    public function getIsPublishedAttribute()
-    {
-        return $this->active == 1;
     }
 
     public function getEditUrlAttribute()
@@ -621,7 +621,7 @@ class Idea extends Model
 
                     // create new
                     $itineraryObj = $this->ideaItineraries()->create([
-                        'idea_id' => $request->input('id'),
+                        'idea_id' => request()->input('id'),
                         'start_time' => $itinerary['attributes']['start_time'],
                         'day_num' => $itinerary['attributes']['day_num'],
                     ]);
