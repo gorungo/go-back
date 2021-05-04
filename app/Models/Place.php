@@ -151,7 +151,7 @@ class Place extends Model
         return $this->belongsToMany('App\Models\Action', 'action_place');
     }
 
-    public function getUrlAttribute()
+    Public function getUrlAttribute()
     {
         return route('places.show', [$this]);
     }

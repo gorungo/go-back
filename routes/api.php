@@ -98,13 +98,14 @@ Route::group(['prefix' => 'v1'], function() {
             ->name('api.ideas.photos_upload');
 
         //Set item main photos
-        Route::patch('/ideas/{idea}/photos/{photo}/set_main', [PhotoIdeaController::class, 'setMain'])
+        Route::patch('/ideas/{idea}/photos/{photo}/setMain', [PhotoIdeaController::class, 'setMain'])
             ->name('api.ideas.photos_set_main');
 
         //Delete item main photos
         Route::delete('/ideas/{idea}/photos/{photo}', [PhotoIdeaController::class, 'destroy'])
             ->name('api.ideas.photos_destroy');
 
+        Route::resource('users.ideas', UserIdeaController::class);
         Route::resource('users.ideas', UserIdeaController::class);
 
         /*

@@ -2,98 +2,83 @@
 
 namespace App\Models;
 
-use Image;
 use App\Http\Requests\Photo\setMainPhoto;
-use Illuminate\Http\Request;
 use App\Http\Requests\Photo\UploadPhoto;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Image;
 
 class Photo extends Model
 {
 
+    public $modelName;
     protected $table = 'photos';
     protected $thmbWidth = 400;
-    protected $maxImageWidth = 2000;
-
-    protected $maxFileSize = 15; // megabites
-
-
+    protected $maxImageWidth = 2000; // megabites
+protected $maxFileSize = 15;
     protected $fillable = [
         'img_name',
         'item_id',
         'item_type',
     ];
-
-    public $modelName;
-
-    protected $appends = ['url'];
+    protected $appends = ['imageUrl'];
 
     public function __construct(array $attributes = [])
     {
-        if(isset($this->item_type))$this->modelName = $this->item_type;
+        if (isset($this->item_type)) {
+            $this->modelName = $this->item_type;
+        }
         parent::__construct($attributes);
     }
 
-    public function item() {
+    public function item()
+    {
         return $this->morphTo();
     }
 
-    public function getAbsoluteURLAttribute(){
+    public function getAbsoluteURLAttribute()
+    {
         return asset($this->storagePath);
     }
 
-    public function getRelativeURLAttribute(){
-        return 'storage/images/' . mb_strtolower($this->item_type) . '/' . $this->item_id . '/' . $this->img_name;
+    public function getRelativeURLAttribute()
+    {
+        return 'storage/images/'.mb_strtolower($this->item_type).'/'.$this->item_id.'/'.$this->img_name;
     }
 
-    public function getImageUrlAttribute(){
+    public function getImageUrlAttribute()
+    {
         return asset($this->storagePath);
     }
-
-    /**
-     * Путь к директории с изображениями
-     * @param $itemId
-     * @return string
-     */
-
-    public function getStoreDirectoryUrl($itemId = null){
-        if($this->item_id){
-            $itemId = $this->item_id;
-            return 'images/' . mb_strtolower($this->item_type) . '/' . $itemId;
-        } else {
-            return 'images/' . mb_strtolower($this->modelName) . '/' . $itemId;
-        }
-
-    }
-
 
     /**
      * Путь к изобаржению в storage
      */
 
-    public function getStoragePathAttribute() {
-        return Storage::disk('images')->url(mb_strtolower($this->item_type) . '/' . $this->item_id . '/' . $this->img_name);
+    public function getStoragePathAttribute()
+    {
+        return Storage::disk('images')->url(mb_strtolower($this->item_type).'/'.$this->item_id.'/'.$this->img_name);
     }
 
-
-    public function createAndStore(UploadPhoto $request, Model $model, $setMain=false){
+    public function createAndStore(UploadPhoto $request, Model $model, $setMain = false)
+    {
 
         $newPhoto = null;
 
-        if($model->id !== null){
+        if ($model->id !== null) {
 
-            $this->modelName = ucfirst(explode('\\', get_class( $model ) )[1]);
+            $this->modelName = ucfirst(explode('\\', get_class($model))[2]);
 
             $image = $request->file('image');
-            $newFileName = mb_strtolower('img' . Str::random(5) . '.' . $image->getClientOriginalExtension());
-            $uploadPath = $this->getStoreDirectoryUrl( $model->id ) . '/' . $newFileName;
+            $newFileName = mb_strtolower('img'.Str::random(5) . '.' . $image->getClientOriginalExtension());
+            $uploadPath = $this->getStoreDirectoryUrl($model->id) . '/' . $newFileName;
 
             // сохраняем изображение на диске в нужной папке, если нужно ресайзим
 
-            if($this->uploadImage( $request , $uploadPath )){
+            if ($this->uploadImage($request, $uploadPath)) {
 
                 $photoStoreData = [
                     'item_id' => $model->id,
@@ -102,26 +87,36 @@ class Photo extends Model
                 ];
 
                 $newPhoto = self::create($photoStoreData);
-
-
             }
         }
 
         return $newPhoto;
     }
 
+    /**
+     * Путь к директории с изображениями
+     * @return string
+     */
 
+    public function getStoreDirectoryUrl($itemId = null){
+        if($this->item_id){
+            $itemId = $this->item_id;
+            return mb_strtolower($this->item_type) . '/' . $itemId;
+        } else {
+            return mb_strtolower($this->modelName) . '/' . $itemId;
+        }
+
+    }
 
     /**
      * Resizing and saving uploaded img
      *
-     * @param Request $request
-     * @param integer $imgId
-     * @param integer $itemId
-     * @return array
+     * @param  Request  $request
+     * @param  string  $uploadPath
+     * @return bool
      */
 
-    public function uploadImage(Request $request, $uploadPath)
+    public function uploadImage(Request $request, string $uploadPath) : bool
     {
 
         if ($request->hasFile('image')) {
@@ -139,13 +134,10 @@ class Photo extends Model
 
                 $img->stream();
 
-                Storage::disk('public')->put( $uploadPath, $img, 'public');
+                Storage::disk('images')->put($uploadPath, $img, 'public');
+                return Storage::disk('images')->exists($uploadPath);
 
-                if(file_exists('storage/'. $uploadPath)){
-                    return true;
-                }
-
-            } catch (\Exception $e){
+            } catch (\Exception $e) {
                 Log::error($e);
             }
 
@@ -163,28 +155,28 @@ class Photo extends Model
 
             try {
 
-                array_map( 'unlink', glob( public_path( 'storage/' . $this->getStoreDirectoryUrl() ) . "/*.*" ) );
+                array_map('unlink', glob(public_path('storage/'.$this->getStoreDirectoryUrl())."/*.*"));
 
                 $image = $request->file('image');
                 $img = Image::make($image->getRealPath());
 
                 // сохраняем аватарку 200 на 200
 
-                $img->fit( 200, 200 );
+                $img->fit(200, 200);
                 $img->stream();
-                Storage::disk( 'public' )->put( $uploadPathBig, $img, 'public' );
+                Storage::disk('public')->put($uploadPathBig, $img, 'public');
 
                 // сохраняем аватарку 50 на 50
 
-                $img->fit( 50, 50 );
+                $img->fit(50, 50);
                 $img->stream();
-                Storage::disk( 'public' )->put( $uploadPathSmall, $img, 'public' );
+                Storage::disk('public')->put($uploadPathSmall, $img, 'public');
 
-                if(file_exists('storage/'. $uploadPathBig) && file_exists('storage/'. $uploadPathSmall)){
+                if (file_exists('storage/'.$uploadPathBig) && file_exists('storage/'.$uploadPathSmall)) {
                     return true;
                 }
 
-            } catch (\Exception $e){
+            } catch (\Exception $e) {
                 Log::error($e);
             }
 
@@ -199,11 +191,11 @@ class Photo extends Model
     /**
      * Making photo main
      *
-     * @param SetMainPhoto $request
+     * @param  SetMainPhoto  $request
      * @return array
      */
 
-    Public function setMain()
+    public function setMain()
     {
 
         // устанавливает главную картинку
@@ -212,35 +204,37 @@ class Photo extends Model
 
             $img = Image::make($this->StoragePath);
 
-            array_map( 'unlink', glob( public_path( 'storage/' . $this->getStoreDirectoryUrl() ) . "/tmb*.*" ) );
+            array_map('unlink', glob(public_path('storage/'.$this->getStoreDirectoryUrl())."/tmb*.*"));
 
             list($txt, $ext) = explode(".", $this->img_name);
 
-            $newMainPhotoFileName = 'tmb' . Str::random(5) . '.' . $ext;
+            $newMainPhotoFileName = 'tmb'.Str::random(5).'.'.$ext;
 
-            if($this->item_type == 'Post'){
-                $img->fit(400,300);
+            if ($this->item_type == 'Post') {
+                $img->fit(400, 300);
 
-            }else if($this->item_type == 'Idea'){
-                $img->fit(600,800);
+            } else {
+                if ($this->item_type == 'Idea') {
+                    $img->fit(600, 800);
 
-            }else{
-                $img->resize( $this->thmbWidth, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
+                } else {
+                    $img->resize($this->thmbWidth, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
 
+                }
             }
 
             $img->stream(); // <-- Key point
 
-            Storage::disk('public')->put($this->getStoreDirectoryUrl() . '/' . $newMainPhotoFileName, $img, 'public');
+            Storage::disk('public')->put($this->getStoreDirectoryUrl().'/'.$newMainPhotoFileName, $img, 'public');
 
             $this->item->thmb_file_name = $newMainPhotoFileName;
             $this->item->save();
 
             return ['type' => 'ok', 'file_name' => $newMainPhotoFileName];
 
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
 
             Log::error($e);
 
@@ -259,11 +253,11 @@ class Photo extends Model
         $image = $request->file('image');
         $rnd = Str::random(5);
 
-        $newFileNameBig = mb_strtolower('img' . $rnd . '.' . $image->getClientOriginalExtension());
-        $newFileNameSmall = mb_strtolower('img' . $rnd . '_sml.' . $image->getClientOriginalExtension());
+        $newFileNameBig = mb_strtolower('img'.$rnd.'.'.$image->getClientOriginalExtension());
+        $newFileNameSmall = mb_strtolower('img'.$rnd.'_sml.'.$image->getClientOriginalExtension());
 
-        $uploadPathBig = 'images/profile/' . $this->id . '/' . $newFileNameBig;
-        $uploadPathSmall = 'images/profile/' . $this->id . '/' . $newFileNameSmall;
+        $uploadPathBig = 'images/profile/'.$this->id.'/'.$newFileNameBig;
+        $uploadPathSmall = 'images/profile/'.$this->id.'/'.$newFileNameSmall;
 
         // сохраняем изображение на диске в нужной папке, если нужно ресайзим
 
@@ -271,7 +265,7 @@ class Photo extends Model
 
             try {
 
-                array_map( 'unlink', glob( public_path( 'storage/images/profile/' . $this->id ) . "/img*.*" ) );
+                array_map('unlink', glob(public_path('storage/images/profile/'.$this->id)."/img*.*"));
 
 
                 $image = $request->file('image');
@@ -279,27 +273,26 @@ class Photo extends Model
 
                 // сохраняем аватарку 200 на 200
 
-                $img->fit( 200, 200 );
+                $img->fit(200, 200);
                 $img->stream();
-                Storage::disk( 'public' )->put( $uploadPathBig, $img, 'public' );
+                Storage::disk('public')->put($uploadPathBig, $img, 'public');
 
                 // сохраняем аватарку 50 на 50
 
-                $img->fit( 50, 50 );
+                $img->fit(50, 50);
                 $img->stream();
-                Storage::disk( 'public' )->put( $uploadPathSmall, $img, 'public' );
+                Storage::disk('public')->put($uploadPathSmall, $img, 'public');
 
-                if(file_exists('storage/'. $uploadPathBig) && file_exists('storage/'. $uploadPathSmall)){
+                if (file_exists('storage/'.$uploadPathBig) && file_exists('storage/'.$uploadPathSmall)) {
                     $this->thmb_file_name = $newFileNameBig;
                     $this->save();
                 }
 
-            } catch (\Exception $e){
+            } catch (\Exception $e) {
                 Log::error($e);
             }
 
         }
-
 
 
         return $this->imageUrl;
@@ -311,7 +304,7 @@ class Photo extends Model
      * @return boolean
      */
 
-    Public function deletePhoto()
+    public function deletePhoto()
     {
 
         // устанавливает главную картинку
@@ -320,15 +313,15 @@ class Photo extends Model
 
             $img = Image::make($this->StoragePath);
 
-            Storage::disk('public')->delete( $this->getStoreDirectoryUrl() . '/' . $this->img_name);
+            Storage::disk('public')->delete($this->getStoreDirectoryUrl().'/'.$this->img_name);
 
-            if(file_exists('storage/'. $this->getStoreDirectoryUrl() . '/' . $this->img_name)){
+            if (file_exists('storage/'.$this->getStoreDirectoryUrl().'/'.$this->img_name)) {
                 return false;
             }
 
             return true;
 
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
 
             Log::error($e);
 
@@ -339,7 +332,8 @@ class Photo extends Model
 
     }
 
-    public function scopeIsActive($query){
+    public function scopeIsActive($query)
+    {
         return $query->where('active', '=', '1');
     }
 

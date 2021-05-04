@@ -8,6 +8,7 @@ use App\Http\Requests\Photo\UploadPhoto;
 use App\Http\Requests\Photo\SetMainPhoto;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Photo as PhotoResource;
 
 class IdeaController extends Controller
 {
@@ -39,7 +40,7 @@ class IdeaController extends Controller
 
     public function upload(UploadPhoto $request, Idea $idea)
     {
-        return response()->json(['file' => $idea->uploadPhoto($request)]);
+        return response()->json(['data' => new PhotoResource($idea->uploadPhoto($request))]);
     }
 
     /**
@@ -52,7 +53,7 @@ class IdeaController extends Controller
 
     public function setMain(SetMainPhoto $request, Idea $idea, Photo $photo)
     {
-        return response()->json($photo->setMain());
+        return response()->json($photo->setMain(), 204);
     }
 
     /**
