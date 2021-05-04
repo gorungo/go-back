@@ -18,7 +18,7 @@ class Photo extends Model
     protected $table = 'photos';
     protected $thmbWidth = 400;
     protected $maxImageWidth = 2000; // megabites
-protected $maxFileSize = 15;
+    protected $maxFileSize = 15;
     protected $fillable = [
         'img_name',
         'item_id',
@@ -73,8 +73,8 @@ protected $maxFileSize = 15;
             $this->modelName = ucfirst(explode('\\', get_class($model))[2]);
 
             $image = $request->file('image');
-            $newFileName = mb_strtolower('img'.Str::random(5) . '.' . $image->getClientOriginalExtension());
-            $uploadPath = $this->getStoreDirectoryUrl($model->id) . '/' . $newFileName;
+            $newFileName = mb_strtolower('img'.Str::random(5).'.'.$image->getClientOriginalExtension());
+            $uploadPath = $this->getStoreDirectoryUrl($model->id).'/'.$newFileName;
 
             // сохраняем изображение на диске в нужной папке, если нужно ресайзим
 
@@ -98,12 +98,13 @@ protected $maxFileSize = 15;
      * @return string
      */
 
-    public function getStoreDirectoryUrl($itemId = null){
-        if($this->item_id){
+    public function getStoreDirectoryUrl($itemId = null)
+    {
+        if ($this->item_id) {
             $itemId = $this->item_id;
-            return mb_strtolower($this->item_type) . '/' . $itemId;
+            return mb_strtolower($this->item_type).'/'.$itemId;
         } else {
-            return mb_strtolower($this->modelName) . '/' . $itemId;
+            return mb_strtolower($this->modelName).'/'.$itemId;
         }
 
     }
@@ -116,7 +117,7 @@ protected $maxFileSize = 15;
      * @return bool
      */
 
-    public function uploadImage(Request $request, string $uploadPath) : bool
+    public function uploadImage(Request $request, string $uploadPath): bool
     {
 
         if ($request->hasFile('image')) {
@@ -306,30 +307,10 @@ protected $maxFileSize = 15;
 
     public function deletePhoto()
     {
-
-        // устанавливает главную картинку
-
-        try {
-
-            $img = Image::make($this->StoragePath);
-
-            Storage::disk('public')->delete($this->getStoreDirectoryUrl().'/'.$this->img_name);
-
-            if (file_exists('storage/'.$this->getStoreDirectoryUrl().'/'.$this->img_name)) {
-                return false;
-            }
-
-            return true;
-
-        } catch (\Exception $e) {
-
-            Log::error($e);
-
+        if(Storage::disk('images')->exists($this->getStoreDirectoryUrl() . '/' . $this->img_name)){
+            Storage::disk('images')->delete($this->getStoreDirectoryUrl() . '/' . $this->img_name);
         }
-
-        return false;
-
-
+        return !Storage::disk('images')->exists($this->getStoreDirectoryUrl() . '/' . $this->img_name);
     }
 
     public function scopeIsActive($query)
