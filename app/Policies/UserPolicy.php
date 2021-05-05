@@ -64,7 +64,7 @@ class UserPolicy
     public function update(User $user, User $model)
     {
         // if can edit all users
-        if($user->hasPermissionTo('edit profiles')){
+        if($user->hasPermissionTo('edit profiles', 'api')){
             return true;
         }
 

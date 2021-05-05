@@ -51,7 +51,7 @@ class UserController extends Controller
      */
     public function ideas(User $user)
     {
-        return response(IdeaResource::collection($user
+        return response()->json(IdeaResource::collection($user
             ->ideas()
             ->joinDescription()
             ->get()
