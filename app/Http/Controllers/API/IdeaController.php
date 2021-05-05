@@ -234,8 +234,21 @@ class IdeaController extends Controller
         return IdeaResource::collection(Idea::getMain($request->title));
     }
 
-    public function validateIdea(PublishIdea $request, Idea $idea)
+    public function validateIdea(PublishIdea $request, Idea $idea): JsonResponse
     {
         return response()->json(['message' => 'ok'], 200);
     }
+
+    public function publish(PublishIdea $request, Idea $idea): JsonResponse
+    {
+        $idea->publish();
+        return response()->json(['message' => 'published'], 200);
+    }
+
+    public function unPublish(PublishIdea $request, Idea $idea): JsonResponse
+    {
+        $idea->publish();
+        return response()->json(['message' => 'published'], 200);
+    }
+
 }

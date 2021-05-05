@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class Idea extends Model
 {
@@ -144,11 +145,6 @@ class Idea extends Model
             });
     }
 
-    public function getIsPublishedAttribute()
-    {
-        return $this->approved_at && $this->active === 1;
-    }
-
     public static function backgroundImage()
     {
         return null;
@@ -179,6 +175,11 @@ class Idea extends Model
     public static function getMain()
     {
         return self::main()->take(50)->get();
+    }
+
+    public function getIsPublishedAttribute()
+    {
+        return $this->approved_at && $this->active === 1;
     }
 
     public function getTitleAttribute()
@@ -261,17 +262,6 @@ class Idea extends Model
     public function ideaPlace(): BelongsTo
     {
         return $this->belongsTo('App\Models\OSM', 'place_id', 'id');
-    }
-
-    public function ideaItineraries(): HasMany
-    {
-        return $this->hasMany('App\Models\Itinerary')
-            ->orderBy('day_num', 'asc');
-    }
-
-    public function ideaPlacesToVisit(): BelongsToMany
-    {
-        return $this->belongsToMany('App\Models\OSM', 'idea_place', 'idea_id', 'place_id');
     }
 
     public function ideaItinerary()
@@ -434,7 +424,7 @@ class Idea extends Model
 
     private function generateSlug(string $title)
     {
-        return str_slug($title);
+        return Str::slug($title);
     }
 
     public function updateAndSync(StoreIdea $request)
@@ -482,35 +472,6 @@ class Idea extends Model
             ->where('locale_id', LocaleMiddleware::getLocaleId());
     }
 
-    public function ideaCategories(): BelongsToMany
-    {
-        return $this
-            ->belongsToMany('App\Models\Category', 'idea_category')
-            ->using('App\Models\Pivots\Category');
-    }
-
-    public function approve()
-    {
-        $this->approved_at = now();
-        $this->save();
-    }
-
-    public function publish()
-    {
-        if(!$this->approved_at && config('app.auto_idea_approve')){
-            $this->approve();
-        }
-
-        $this->active = 1;
-        $this->save();
-    }
-
-    public function unPublish()
-    {
-        $this->active = 0;
-        $this->save();
-    }
-
     private function updateRelationships(Request $request): void
     {
         $r = $request->input('relationships');
@@ -523,30 +484,6 @@ class Idea extends Model
         $this->saveDates($r['dates']);
 
         $this->saveOptions($request->input('attributes.options'));
-    }
-
-    public function updateRelationship(Request $request, string $type): void
-    {
-        switch ($type) {
-            case 'categories' :
-                $this->saveCategories($request->input('data'));
-                break;
-            case 'itineraries' :
-                $this->saveItineraries($request->input('data'));
-                break;
-
-            case 'place' :
-                $this->savePlace($request->input('data'));
-                break;
-
-            case 'places_to_visit' :
-                $this->savePlacesToVisit($request->input('data'));
-                break;
-
-            case 'dates' :
-                $this->saveDates($request->input('data'));
-                break;
-        }
     }
 
     private function saveCategories($categories): void
@@ -566,69 +503,62 @@ class Idea extends Model
 
     }
 
-    /*    private function savePrice(StoreIdea $request): void
-        {
-            $actionPrice = $request->input('relationships.price');
-            if ($actionPrice['id'] !== null) {
-                $this->ideaPrice()->whereId($actionPrice['id'])->update([
-                    'price' => (int) $actionPrice['attributes']['price'],
-                    'currency_id' => $actionPrice['relationships']['currency']['id'],
-                ]);
-            } else {
-                $this->ideaPrice()->create([
-                    'price' => (int) $actionPrice['attributes']['price'],
-                    'currency_id' => $actionPrice['relationships']['currency']['id'],
-                ]);
-            }
-        }*/
+    public function ideaCategories(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany('App\Models\Category', 'idea_category')
+            ->using('App\Models\Pivots\Category');
+    }
 
     private function saveItineraries($itineraries): void
     {
         $usedItinerariesIds = [];
-
         if ($itineraries) {
             foreach ($itineraries as $itinerary) {
-                $descriptionStoreData = [
-                    'title' => $itinerary['attributes']['title'],
-                    'description' => $itinerary['attributes']['description'],
-                    'what_included' => $itinerary['attributes']['what_included'],
-                    'will_visit' => $itinerary['attributes']['will_visit'],
-                    'locale_id' => LocaleMiddleware::getLocaleId(),
-                ];
+                if ($itinerary['attributes']) {
+                    $descriptionStoreData = [
+                        'title' => $itinerary['attributes']['title'],
+                        'description' => $itinerary['attributes']['description'],
+                        'what_included' => $itinerary['attributes']['what_included'],
+                        'will_visit' => $itinerary['attributes']['will_visit'],
+                        'locale_id' => LocaleMiddleware::getLocaleId(),
+                    ];
 
-                // todo
-                // на фронте переделать, чтобы выдавался дефолтный id
-                // соотвественно тут научить это все понимать
+                    // todo
+                    // на фронте переделать, чтобы выдавался дефолтный id
+                    // соотвественно тут научить это все понимать
 
-                if ($itinerary['id'] !== null && $itinerary['id'] !== 0) {
+                    if ($itinerary['id'] !== null && $itinerary['id'] !== 0) {
 
-                    // update existed
-                    $itineraryObj = Itinerary::find($itinerary['id']);
-                    $itineraryObj->start_time = $itinerary['attributes']['start_time'];
-                    $itineraryObj->day_num = $itinerary['attributes']['day_num'];
-                    $itineraryObj->day_order = $itinerary['attributes']['day_order'];
+                        // update existed
+                        $itineraryObj = Itinerary::find($itinerary['id']);
+                        $itineraryObj->start_time = $itinerary['attributes']['start_time'];
+                        $itineraryObj->day_num = $itinerary['attributes']['day_num'];
+                        $itineraryObj->day_order = $itinerary['attributes']['day_order'];
 
-                    if ($itineraryObj->localisedItineraryDescription) {
-                        $itineraryObj->localisedItineraryDescription()->update($descriptionStoreData);
+                        if ($itineraryObj->localisedItineraryDescription) {
+                            $itineraryObj->localisedItineraryDescription()->update($descriptionStoreData);
+                        } else {
+                            $itineraryObj->localisedItineraryDescription()->create($descriptionStoreData);
+                        }
+
+                        //$itineraryObj->localisedItineraryDescription()->updateOrCreate($descriptionStoreData);
+                        $itineraryObj->save();
+
                     } else {
+
+                        // create new
+                        $itineraryObj = $this->ideaItineraries()->create([
+                            'idea_id' => request()->input('id'),
+                            'start_time' => $itinerary['attributes']['start_time'],
+                            'day_num' => $itinerary['attributes']['day_num'],
+                        ]);
+
                         $itineraryObj->localisedItineraryDescription()->create($descriptionStoreData);
                     }
-
-                    //$itineraryObj->localisedItineraryDescription()->updateOrCreate($descriptionStoreData);
-                    $itineraryObj->save();
-
-                } else {
-
-                    // create new
-                    $itineraryObj = $this->ideaItineraries()->create([
-                        'idea_id' => request()->input('id'),
-                        'start_time' => $itinerary['attributes']['start_time'],
-                        'day_num' => $itinerary['attributes']['day_num'],
-                    ]);
-
-                    $itineraryObj->localisedItineraryDescription()->create($descriptionStoreData);
+                    $usedItinerariesIds[] = $itineraryObj->id;
                 }
-                $usedItinerariesIds[] = $itineraryObj->id;
+
             }
 
         }
@@ -636,28 +566,10 @@ class Idea extends Model
         $this->ideaItineraries()->whereNotIn('id', $usedItinerariesIds)->delete();
     }
 
-    public function validate(PublishIdea $request)
+    public function ideaItineraries(): HasMany
     {
-
-    }
-
-    private function saveTags($tags): void
-    {
-        $validTags = [];
-
-        // Составляем массив из тэгов, потом сохряняем
-        if ($tags && count($tags)) {
-            foreach ($tags as $tag) {
-                if ($tag['attributes']['name'] !== '') {
-                    $validTags[] = trim($tag['attributes']['name']);
-                }
-            }
-        }
-
-        if (count($validTags)) {
-            $this->retag($validTags);
-        }
-
+        return $this->hasMany('App\Models\Itinerary')
+            ->orderBy('day_num', 'asc');
     }
 
     private function savePlace($place): void
@@ -693,6 +605,11 @@ class Idea extends Model
             }
 
         }
+    }
+
+    public function ideaPlacesToVisit(): BelongsToMany
+    {
+        return $this->belongsToMany('App\Models\OSM', 'idea_place', 'idea_id', 'place_id');
     }
 
     private function saveDates($dates): void
@@ -749,12 +666,79 @@ class Idea extends Model
 
     }
 
+    /*    private function savePrice(StoreIdea $request): void
+        {
+            $actionPrice = $request->input('relationships.price');
+            if ($actionPrice['id'] !== null) {
+                $this->ideaPrice()->whereId($actionPrice['id'])->update([
+                    'price' => (int) $actionPrice['attributes']['price'],
+                    'currency_id' => $actionPrice['relationships']['currency']['id'],
+                ]);
+            } else {
+                $this->ideaPrice()->create([
+                    'price' => (int) $actionPrice['attributes']['price'],
+                    'currency_id' => $actionPrice['relationships']['currency']['id'],
+                ]);
+            }
+        }*/
+
     private function saveOptions($options): void
     {
         if ($options) {
             $this->options = json_encode($options);
             $this->save();
         }
+    }
+
+    public function publish()
+    {
+        if (!$this->approved_at && config('app.auto_idea_approve')) {
+            $this->approve();
+        }
+
+        $this->active = 1;
+        $this->save();
+    }
+
+    public function approve()
+    {
+        $this->approved_at = now();
+        $this->save();
+    }
+
+    public function unPublish()
+    {
+        $this->active = 0;
+        $this->save();
+    }
+
+    public function updateRelationship(Request $request, string $type): void
+    {
+        switch ($type) {
+            case 'categories' :
+                $this->saveCategories($request->input('data'));
+                break;
+            case 'itineraries' :
+                $this->saveItineraries($request->input('data'));
+                break;
+
+            case 'place' :
+                $this->savePlace($request->input('data'));
+                break;
+
+            case 'places_to_visit' :
+                $this->savePlacesToVisit($request->input('data'));
+                break;
+
+            case 'dates' :
+                $this->saveDates($request->input('data'));
+                break;
+        }
+    }
+
+    public function validate(PublishIdea $request)
+    {
+
     }
 
     public function scopeIsActive($query)
@@ -984,6 +968,25 @@ class Idea extends Model
             });
         }
         return $query;
+    }
+
+    private function saveTags($tags): void
+    {
+        $validTags = [];
+
+        // Составляем массив из тэгов, потом сохряняем
+        if ($tags && count($tags)) {
+            foreach ($tags as $tag) {
+                if ($tag['attributes']['name'] !== '') {
+                    $validTags[] = trim($tag['attributes']['name']);
+                }
+            }
+        }
+
+        if (count($validTags)) {
+            $this->retag($validTags);
+        }
+
     }
 
     private function saveDatePrice(): void

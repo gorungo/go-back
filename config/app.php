@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'ru',
     'languages' => ['en', 'ru', 'ch'],
 
     /*
@@ -187,6 +187,7 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         \Conner\Tagging\Providers\TaggingServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
 
     ],
 

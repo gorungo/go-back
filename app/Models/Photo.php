@@ -228,7 +228,7 @@ class Photo extends Model
 
             $img->stream(); // <-- Key point
 
-            Storage::disk('public')->put($this->getStoreDirectoryUrl().'/'.$newMainPhotoFileName, $img, 'public');
+            Storage::disk('images')->put($this->getStoreDirectoryUrl().'/'.$newMainPhotoFileName, $img, 'public');
 
             $this->item->thmb_file_name = $newMainPhotoFileName;
             $this->item->save();

@@ -20,6 +20,8 @@ use App\Http\Controllers\API\UserIdeaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use Spatie\Permission\Models\Permission;
 
 
 /*
@@ -52,6 +54,15 @@ Route::group(['prefix' => 'v1'], function() {
         echo Storage::url((request()->input('path')));
     });
 
+    Route::get('/p', function(){
+        echo User::find(request()->input('u'))->getAllPermissions();
+    });
+
+    Route::get('/pa', function(){
+        echo User::find(2)->getRoleNames();
+    });
+
+
     Route::group(['middleware' => ['auth:api']], function () {
 
         Route::get('/test', function (Request $request) {
@@ -79,6 +90,8 @@ Route::group(['prefix' => 'v1'], function() {
 
         //Route::patch('/ideas/{idea}', 'API\IdeaController@update')->name('api.ideas.update');
         Route::patch('/ideas/{idea}/validate', [IdeaController::class, 'validateIdea'])->name('api.ideas.validate');
+        Route::patch('/ideas/{idea}/publish', [IdeaController::class, 'publish'])->name('api.ideas.publish');
+        Route::patch('/ideas/{idea}/unPublish', [IdeaController::class, 'unPublish'])->name('api.ideas.unPublish');
         //Route::delete('/ideas/{idea}', 'API\IdeaController@destroy')->name('api.ideas.destroy');
 
         Route::get('/tags/allMain', [TagController::class, 'allMainTagsCollection'])->name('api.tags.all_main_tags_collection');

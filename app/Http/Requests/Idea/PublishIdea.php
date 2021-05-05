@@ -49,9 +49,6 @@ class PublishIdea extends FormRequest
 
         ];
 
-
-
-
         if(!Auth()->user()->can('createMainIdea')){
             $rules[] = [
                 'relationships.idea.id' => 'required|integer|exists:ideas,id',

@@ -5,6 +5,8 @@ namespace App\Policies;
 use App\Models\User;
 use App\Models\Idea;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Permission;
 
 class IdeaPolicy
 {

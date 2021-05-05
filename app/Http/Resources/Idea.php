@@ -34,7 +34,7 @@ class Idea extends JsonResource
             'attributes' => [
                 'slug' => $this->id ? $this->slug : '',
                 'active' => $this->id ? $this->active : 1,
-                'is_approved' => $this->is_approved ? $this->is_approved : 0,
+                'is_approved' => (bool) $this->approved_at,
                 'is_published' => $this->isPublished,
                 'title' => $this->id ? $this->title : '',
                 'intro' => $this->id ? $this->intro : '',
