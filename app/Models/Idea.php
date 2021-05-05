@@ -736,10 +736,6 @@ class Idea extends Model
         }
     }
 
-    public function validate(PublishIdea $request)
-    {
-
-    }
 
     public function scopeIsActive($query)
     {
@@ -763,7 +759,7 @@ class Idea extends Model
      */
     public function scopeIsPublished($query)
     {
-        return $query->where('ideas.active', 1)->isApproved();
+        return $query->isActive()->isApproved();
     }
 
     public function scopeWhereCategory($query, Category $activeCategory = null)

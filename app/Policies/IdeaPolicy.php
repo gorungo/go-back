@@ -33,8 +33,13 @@ class IdeaPolicy
                 }
             }
         }
+
         // can see all published not blocked
         if(!$idea->isBlocked && $idea->isPublished){
+            return true;
+        }
+
+        if($idea->author->hasPermissionTo('edit ideas')){
             return true;
         }
 
