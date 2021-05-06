@@ -19,7 +19,7 @@ class CategoryPolicy
      */
     public function view(User $user, Category $category)
     {
-        return $user->hasPermissionTo('view categories');
+        return $user->hasPermissionTo('view categories', 'api');
     }
 
     /**
@@ -30,7 +30,7 @@ class CategoryPolicy
      */
     public function create(User $user)
     {
-        return $user->hasPermissionTo('edit categories');
+        return $user->hasPermissionTo('edit categories', 'api');
     }
 
     /**
@@ -42,7 +42,7 @@ class CategoryPolicy
      */
     public function update(User $user, Category $category)
     {
-        return $user->hasPermissionTo('edit categories');
+        return $user->hasPermissionTo('edit categories', 'api');
     }
 
     /**
@@ -54,7 +54,7 @@ class CategoryPolicy
      */
     public function delete(User $user, Category $category)
     {
-        return $user->hasPermissionTo('delete categories');
+        return $user->hasPermissionTo('delete categories', 'api');
     }
 
     /**

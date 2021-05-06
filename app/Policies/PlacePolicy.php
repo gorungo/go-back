@@ -44,7 +44,7 @@ class PlacePolicy
      */
     public function create(User $user)
     {
-        return $user->hasPermissionTo('edit places');
+        return $user->hasPermissionTo('edit places', 'api');
     }
 
     /**
@@ -57,12 +57,12 @@ class PlacePolicy
     public function update(User $user, Place $place)
     {
         // if can edit all ideas
-        if($user->hasPermissionTo('edit places')){
+        if($user->hasPermissionTo('edit places', 'api')){
             return true;
         }
 
         // if can edit own idea
-        if($user->hasPermissionTo('edit own places')){
+        if($user->hasPermissionTo('edit own places', 'api')){
             //return $place->author_id === $user->id;
         }
 

@@ -29,7 +29,7 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        return $user->hasPermissionTo('edit profiles');
+        return $user->hasPermissionTo('edit profiles', 'api');
     }
 
     /**
@@ -42,12 +42,12 @@ class UserPolicy
     public function updateProfile(User $user, User $model)
     {
         // if can edit all profile
-        if($user->hasPermissionTo('edit profiles')){
+        if($user->hasPermissionTo('edit profiles', 'api')){
             return true;
         }
 
         // if can edit own profile
-        if($user->hasPermissionTo('edit own profiles')){
+        if($user->hasPermissionTo('edit own profiles', 'api')){
             return $model->id === $user->id;
         }
 

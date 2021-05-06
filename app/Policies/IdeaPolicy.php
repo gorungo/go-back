@@ -28,7 +28,7 @@ class IdeaPolicy
     {
         if(request()->has('edit')){
             if($user){
-                if($user->hasPermissionTo('edit own ideas')){
+                if($user->hasPermissionTo('edit own ideas', 'api')){
                     return $idea->author_id === $user->id;
                 }
             }
@@ -39,7 +39,7 @@ class IdeaPolicy
             return true;
         }
 
-        if($idea->author->hasPermissionTo('edit ideas')){
+        if($idea->author->hasPermissionTo('edit ideas', 'api')){
             return true;
         }
 
@@ -56,12 +56,12 @@ class IdeaPolicy
     public function viewUnpublished(User $user, Idea $idea)
     {
         // if can view all unpublished actions
-        if($user->hasPermissionTo('view unpublished ideas')){
+        if($user->hasPermissionTo('view unpublished ideas', 'api')){
             return true;
         }
 
         // if can view own action
-        if($user->hasPermissionTo('view own unpublished ideas')){
+        if($user->hasPermissionTo('view own unpublished ideas', 'api')){
             return $idea->author_id === $user->id;
         }
 
@@ -76,7 +76,7 @@ class IdeaPolicy
      */
     public function create(User $user)
     {
-        return $user->hasPermissionTo('edit own ideas');
+        return $user->hasPermissionTo('edit own ideas', 'api');
     }
 
     /**
@@ -87,7 +87,7 @@ class IdeaPolicy
      */
     public function createMainIdea(User $user)
     {
-        return $user->hasPermissionTo('edit ideas');
+        return $user->hasPermissionTo('edit ideas', 'api');
     }
 
     /**
@@ -100,12 +100,12 @@ class IdeaPolicy
     public function edit(User $user, Idea $idea)
     {
         // if can edit all ideas
-        if($user->hasPermissionTo('edit ideas')){
+        if($user->hasPermissionTo('edit ideas', 'api')){
             return true;
         }
 
         // if can edit own idea
-        if($user->hasPermissionTo('edit own ideas')){
+        if($user->hasPermissionTo('edit own ideas', 'api')){
             return $idea->author_id === $user->id;
         }
 
@@ -122,12 +122,12 @@ class IdeaPolicy
     public function update(User $user, Idea $idea)
     {
         // if can edit all ideas
-        if($user->hasPermissionTo('edit ideas')){
+        if($user->hasPermissionTo('edit ideas', 'api')){
             return true;
         }
 
         // if can edit own idea
-        if($user->hasPermissionTo('edit own ideas')){
+        if($user->hasPermissionTo('edit own ideas', 'api')){
             return $idea->author_id === $user->id;
         }
 
@@ -144,7 +144,7 @@ class IdeaPolicy
     public function delete(User $user, Idea $idea)
     {
         return $idea->author_id === $user->id;
-        return $user->hasPermissionTo('delete ideas') || $user->hasPermissionTo('delete own ideas');
+        return $user->hasPermissionTo('delete ideas', 'api') || $user->hasPermissionTo('delete own ideas', 'api');
     }
 
     /**
