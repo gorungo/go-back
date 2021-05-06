@@ -39,7 +39,7 @@ class IdeaPolicy
             return true;
         }
 
-        if($idea->author->hasPermissionTo('edit ideas', 'api')){
+        if($idea->author->hasAnyRole(['writer', 'moderator', 'super-admin'])){
             return true;
         }
 
