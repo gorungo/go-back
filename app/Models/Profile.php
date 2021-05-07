@@ -46,7 +46,7 @@ class Profile extends Model
 
     public function profileBooking() : HasOne
     {
-        return $this->hasOne('App\Models\ProfileBooking');
+        return $this->hasOne(ProfileBooking::class, 'id');
     }
 
 
