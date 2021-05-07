@@ -79,10 +79,12 @@ class Profile extends Model
 
     public function saveRelationships(Store $request)
     {
-        $this->profileBooking()->updateOrCreate([
-            'info' => $request->input('data.attributes.booking_info'),
-            'contacts' => $request->input('data.attributes.booking_contacts'),
-        ]);
+        if($request->input('data.attributes.booking_info') !== '' && $request->input('data.attributes.booking_contacts') != ''){
+            $this->profileBooking()->updateOrCreate([
+                'info' => $request->input('data.attributes.booking_info'),
+                'contacts' => $request->input('data.attributes.booking_contacts'),
+            ]);
+        }
     }
 
     public function uploadPhoto(UploadProfilePhoto $request)
