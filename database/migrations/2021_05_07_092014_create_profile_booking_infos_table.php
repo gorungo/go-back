@@ -15,8 +15,10 @@ class CreateProfileBookingInfosTable extends Migration
     {
         Schema::create('booking_infos', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('profile_id');
             $table->text('info')->nullable();
             $table->text('contacts')->nullable();
+
         });
     }
 
