@@ -32,6 +32,9 @@ class Profile extends JsonResource
                 'phone' => $this->phone ?? '',
                 'site' => $this->site ?? '',
                 'sex' => $this->sex ?? '',
+
+                'booking_info' => $this->profileBooking ? $this->profileBooking->info : '',
+                'booking_contacts' => $this->profileBooking ? $this->profileBooking->contacts : '',
             ],
 
             'relationships' => [

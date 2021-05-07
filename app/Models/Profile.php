@@ -7,6 +7,7 @@ use App\Http\Requests\Profile\Store;
 use App\Models\Traits\Hashable;
 use DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Image;
@@ -43,6 +44,11 @@ class Profile extends Model
         return $this->belongsTo('App\Models\User');
     }
 
+    public function profileBooking() : HasOne
+    {
+        return $this->hasOne('App\Models\ProfileBooking');
+    }
+
 
     public function getTmbImgPathAttribute()
     {
@@ -69,6 +75,14 @@ class Profile extends Model
     {
         $this->update($request->input('data.attributes'));
         return $this;
+    }
+
+    public function saveRelationships(Store $request)
+    {
+        $this->profileBooking()->updateOrCreate([
+            'info' => $request->input('data.attributes.booking_info'),
+            'contacts' => $request->input('data.attributes.booking_contacts'),
+        ]);
     }
 
     public function uploadPhoto(UploadProfilePhoto $request)

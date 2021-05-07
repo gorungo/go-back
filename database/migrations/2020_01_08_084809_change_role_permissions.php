@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePasswordResetsTable extends Migration
+use Spatie\Permission\Models\Role;
+
+class ChangeRolePermissions extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +15,11 @@ class CreatePasswordResetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('password_resets', function (Blueprint $table) {
-            $table->string('email')->index();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
-        });
+        $companyRole = Role::findById(3);
+        $companyRole->syncPermissions([18,21,23,25]);
+
+        $companyRole->name = 'ideas-author';
+        $companyRole->save();
     }
 
     /**
@@ -27,6 +29,6 @@ class CreatePasswordResetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('password_resets');
+        //
     }
 }
