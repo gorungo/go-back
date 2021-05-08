@@ -74,6 +74,7 @@ class Profile extends Model
     public function updateAndSync(Store $request)
     {
         $this->update($request->input('data.attributes'));
+        $this->saveRelationships($request);
         return $this;
     }
 
