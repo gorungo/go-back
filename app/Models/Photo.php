@@ -202,11 +202,8 @@ class Photo extends Model
         // устанавливает главную картинку
 
         try {
-Log::info($this->StoragePath);
-            $img = Image::make($this->StoragePath);
-
+            $img = Image::make(public_path($this->relativeURL));
             array_map('unlink', glob(public_path('storage/'.$this->getStoreDirectoryUrl())."/tmb*.*"));
-
             list($txt, $ext) = explode(".", $this->img_name);
 
             $newMainPhotoFileName = 'tmb'.Str::random(5).'.'.$ext;
