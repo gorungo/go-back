@@ -582,11 +582,10 @@ class Idea extends Model
                 $newPlace = OSM::createFrom($place);
                 $this->place_id = $newPlace->id;
             }
-            $this->save();
         } else {
             $this->place_id = null;
         }
-
+        $this->save();
     }
 
     private function savePlacesToVisit($places): void
