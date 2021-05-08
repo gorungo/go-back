@@ -44,9 +44,9 @@ class Profile extends Model
         return $this->belongsTo('App\Models\User');
     }
 
-    public function profileBooking() : HasOne
+    public function bookingInfo() : HasOne
     {
-        return $this->hasOne(ProfileBooking::class, 'id');
+        return $this->hasOne(BookingInfo::class);
     }
 
 
@@ -81,7 +81,7 @@ class Profile extends Model
     public function saveRelationships(Store $request)
     {
         if($request->input('data.attributes.booking_info') !== '' && $request->input('data.attributes.booking_contacts') != ''){
-            $this->profileBooking()->updateOrCreate([
+            $this->bookingInfo()->updateOrCreate([
                 'info' => $request->input('data.attributes.booking_info'),
                 'contacts' => $request->input('data.attributes.booking_contacts'),
             ]);
