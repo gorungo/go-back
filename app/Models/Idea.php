@@ -583,7 +583,10 @@ class Idea extends Model
                 $this->place_id = $newPlace->id;
             }
             $this->save();
+        } else {
+            $this->place_id = null;
         }
+
     }
 
     private function savePlacesToVisit($places): void
