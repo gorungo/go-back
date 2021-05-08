@@ -19,7 +19,7 @@ class ProfilePolicy
      */
     public function view(User $user, Profile $profile)
     {
-        if($user->hasPermissionTo('view own profiles', 'api')){
+        if($user->hasPermissionTo('view profiles', 'api')){
             return $profile->user_id === $user->id;
         }
     }
@@ -44,7 +44,7 @@ class ProfilePolicy
      */
     public function update(User $user, Profile $profile)
     {
-        if($user->hasPermissionTo('edit own profiles', 'api')){
+        if($user->hasPermissionTo('edit profiles', 'api')){
             return $profile->user_id === $user->id;
         }
     }

@@ -66,7 +66,7 @@ class CategoryPolicy
      */
     public function restore(User $user, Category $category)
     {
-        return $user->hasAnyRole(['admin', 'super-admin']);
+        return $user->hasAnyRole(['moderator', 'super-admin']);
     }
 
     /**
@@ -78,6 +78,6 @@ class CategoryPolicy
      */
     public function forceDelete(User $user, Category $category)
     {
-        return $user->hasAnyRole(['admin', 'super-admin']);
+        return $user->hasAnyRole(['moderator', 'super-admin']);
     }
 }

@@ -26,22 +26,21 @@ class IdeaPolicy
      */
     public function view(?User $user, Idea $idea)
     {
-        return true;
-
-        if(request()->has('edit')){
-            if($user){
-                if($user->hasPermissionTo('edit own ideas', 'api')){
-                    return $idea->author_id === $user->id;
+        if($user->hasPermissionTo('view ideas', 'api')) {
+            if (request()->has('edit')) {
+                if ($user) {
+                    if ($user->hasPermissionTo('edit ideas', 'api')) {
+                        return $idea->author_id === $user->id;
+                    }
                 }
+            }
+            // can see all published not blocked
+            if (!$idea->isBlocked && $idea->isPublished) {
+                return true;
             }
         }
 
-        // can see all published not blocked
-        if(!$idea->isBlocked && $idea->isPublished){
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     /**
@@ -59,7 +58,7 @@ class IdeaPolicy
         }
 
         // if can view own action
-        if($user->hasPermissionTo('view own unpublished ideas', 'api')){
+        if($user->hasPermissionTo('view unpublished ideas', 'api')){
             return $idea->author_id === $user->id;
         }
 
@@ -74,7 +73,7 @@ class IdeaPolicy
      */
     public function create(User $user)
     {
-        return $user->hasPermissionTo('edit own ideas', 'api');
+        return $user->hasPermissionTo('edit ideas', 'api');
     }
 
     /**
@@ -85,7 +84,7 @@ class IdeaPolicy
      */
     public function createMainIdea(User $user)
     {
-        return $user->hasPermissionTo('edit ideas', 'api');
+        return $user->hasAnyRole(['moderator', 'super-admin']);
     }
 
     /**
@@ -103,7 +102,7 @@ class IdeaPolicy
         }
 
         // if can edit own idea
-        if($user->hasPermissionTo('edit own ideas', 'api')){
+        if($user->hasPermissionTo('edit ideas', 'api')){
             return $idea->author_id === $user->id;
         }
 
@@ -120,12 +119,12 @@ class IdeaPolicy
     public function update(User $user, Idea $idea)
     {
         // if can edit all ideas
-        if($user->hasPermissionTo('edit ideas', 'api')){
+        if($user->hasAnyRole(['moderator', 'super-admin'])){
             return true;
         }
 
         // if can edit own idea
-        if($user->hasPermissionTo('edit own ideas', 'api')){
+        if($user->hasPermissionTo('edit ideas', 'api')){
             return $idea->author_id === $user->id;
         }
 
@@ -141,8 +140,13 @@ class IdeaPolicy
      */
     public function delete(User $user, Idea $idea)
     {
-        return $idea->author_id === $user->id;
-        return $user->hasPermissionTo('delete ideas', 'api') || $user->hasPermissionTo('delete own ideas', 'api');
+        if($user->hasAnyRole(['moderator', 'super-admin'])){
+            return true;
+        }
+        if($user->hasPermissionTo('delete ideas', 'api')){
+            return $idea->author_id === $user->id;
+        }
+
     }
 
     /**
@@ -154,7 +158,7 @@ class IdeaPolicy
      */
     public function restore(User $user, Idea $idea)
     {
-        return $user->hasAnyRole(['admin', 'super-admin']);
+        return $user->hasAnyRole(['moderator', 'super-admin']);
     }
 
     /**
@@ -166,6 +170,6 @@ class IdeaPolicy
      */
     public function forceDelete(User $user, Idea $idea)
     {
-        return $user->hasAnyRole(['admin', 'super-admin']);
+        return $user->hasAnyRole(['moderator', 'super-admin']);
     }
 }

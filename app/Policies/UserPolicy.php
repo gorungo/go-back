@@ -47,7 +47,7 @@ class UserPolicy
         }
 
         // if can edit own profile
-        if($user->hasPermissionTo('edit own profiles', 'api')){
+        if($user->hasPermissionTo('edit profiles', 'api')){
             return $model->id === $user->id;
         }
 
