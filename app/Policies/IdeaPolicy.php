@@ -26,7 +26,7 @@ class IdeaPolicy
      */
     public function view(?User $user, Idea $idea)
     {
-        if($user->hasPermissionTo('view ideas', 'api')) {
+        if($user && $user->hasPermissionTo('view ideas', 'api')) {
             if (request()->has('edit')) {
                 if ($user) {
                     if ($user->hasPermissionTo('edit ideas', 'api')) {
@@ -34,13 +34,13 @@ class IdeaPolicy
                     }
                 }
             }
-            // can see all published not blocked
-            if (!$idea->isBlocked && $idea->isPublished) {
-                return true;
-            }
         }
 
-        return true;
+        // can see all published not blocked
+        if (!$idea->isBlocked) {
+            return true;
+        }
+
     }
 
     /**
