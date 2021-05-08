@@ -53,7 +53,7 @@ class IdeaController extends Controller
 
     public function setMain(SetMainPhoto $request, Idea $idea, Photo $photo)
     {
-        return response()->json($photo->setMain(), 204);
+        return response()->json(['data'=>$photo->setMain()], 200);
     }
 
     /**
