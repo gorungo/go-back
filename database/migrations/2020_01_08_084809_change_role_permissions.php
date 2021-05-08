@@ -18,7 +18,7 @@ class ChangeRolePermissions extends Migration
         $companyRole = Role::findById(3);
         $companyRole->syncPermissions([18,21,23,25]);
 
-        $companyRole->name = 'ideas-author';
+        $companyRole->name = 'organizer';
         $companyRole->save();
     }
 
