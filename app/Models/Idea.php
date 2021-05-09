@@ -66,7 +66,7 @@ class Idea extends Model
     {
         return self::joinPlace()
             //->inFuture()
-            //->whereFilters()
+            ->whereFilters()
             //->sorting()
             ->distinct()
             ->select(['ideas.*', 'osms.coordinates'])
