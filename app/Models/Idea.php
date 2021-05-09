@@ -947,11 +947,7 @@ class Idea extends Model
         if (request()->has('search_type')) {
             switch (request()->input('search_type')) {
                 case 'place_id':
-                    return $query->where('ideas.place_id', request()->input('place_id'));
-
-                case 'nearby':
-                    return $query->where('ideas.place_id', request()->input('place_id'));
-
+                    return $query->wherePlaceId(request()->input('place_id'));
                 default:
                     return $query->where('ideas.place_id', request()->input('place_id'));
             }
