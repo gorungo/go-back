@@ -65,9 +65,9 @@ class Idea extends Model
     public static function itemsList(Request $request)
     {
         return self::joinPlace()
-            ->inFuture()
-            ->whereFilters()
-            ->sorting()
+            //->inFuture()
+            //->whereFilters()
+            //->sorting()
             ->distinct()
             ->select(['ideas.*', 'osms.coordinates'])
             ->paginate();
