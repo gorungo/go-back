@@ -832,7 +832,7 @@ class Idea extends Model
 
     public function scopeJoinPlace($query)
     {
-        return $query->join('osms', 'ideas.place_id', '=', 'osms.place_id');
+        return $query->join('osms', 'ideas.place_id', '=', 'osms.id');
     }
 
     public function scopeSorting($query)
