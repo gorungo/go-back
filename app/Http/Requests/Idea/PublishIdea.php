@@ -49,6 +49,7 @@ class PublishIdea extends FormRequest
             'relationships.dates.*.relationships.ideaPrice.relationships.currency.id' => 'required|integer|exists:currencies,id',
 
             'attributes.options.languages' => 'required|array|min:1',
+            'relationships.photos.array' => 'required|array|min:5',
 
         ];
 

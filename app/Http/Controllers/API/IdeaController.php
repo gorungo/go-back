@@ -245,10 +245,10 @@ class IdeaController extends Controller
         return response()->json(['message' => 'published'], 200);
     }
 
-    public function unPublish(PublishIdea $request, Idea $idea): JsonResponse
+    public function unPublish(Request $request, Idea $idea): JsonResponse
     {
-        $idea->publish();
-        return response()->json(['message' => 'published'], 200);
+        $idea->unPublish();
+        return response()->json(['message' => 'unpublished'], 200);
     }
 
 }
