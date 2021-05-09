@@ -25,6 +25,11 @@ class OSMController extends Controller
         return response()->json($this->osm->search($request));
     }
 
+    public function show(Request $request, OSM $osm)
+    {
+        return response()->json(new OSMResource($osm));
+    }
+
     public function view(Request $request, OSM $osm)
     {
         return response()->json(new OSMResource($osm));
