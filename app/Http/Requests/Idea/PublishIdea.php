@@ -38,6 +38,7 @@ class PublishIdea extends FormRequest
             'relationships.itineraries' => Rule::requiredIf(function(){
                 return request()->input('attributes.created_at') !== null;
             }),
+
             'relationships.itineraries.*.attributes.title' => 'required',
             'relationships.itineraries.*.attributes.description' => 'required',
 
@@ -46,6 +47,8 @@ class PublishIdea extends FormRequest
             'relationships.dates.*.attributes.start_time' => 'required|min:8|max:8',
             'relationships.dates.*.relationships.ideaPrice.attributes.price' => 'required|nullable',
             'relationships.dates.*.relationships.ideaPrice.relationships.currency.id' => 'required|integer|exists:currencies,id',
+
+            'attributes.options.languages' => 'required|array|min:1',
 
         ];
 
