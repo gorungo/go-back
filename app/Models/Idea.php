@@ -62,19 +62,20 @@ class Idea extends Model
      * @param  null  $activeCategory
      * @return mixed
      */
-    public static function itemsList(Request $request, $activeCategory = null)
+    public static function itemsList(Request $request)
     {
-        $activeCategoryId = 0;
-
-        if ($activeCategory) {
-            $activeCategoryId = $activeCategory->id;
-        }
+        return self::joinPlace()
+            ->inFuture()
+            ->whereFilters()
+            ->sorting()
+            ->distinct()
+            ->select(['ideas.*', 'osms.coordinates'])
+            ->paginate();
 
         // получаем список активных идей с учетом города, страницы, локали
         return Cache::tags(['ideas'])->remember('ideas_'.LocaleMiddleware::getLocale().'_category_'.$activeCategoryId.'_'.request()->getQueryString(),
-            0, function () use ($activeCategory, $request) {
-                return self::whereCategory($activeCategory)
-                    ->joinPlace()
+            0, function () use ($request) {
+                return self::joinPlace()
                     ->inFuture()
                     ->whereFilters()
                     ->sorting()
