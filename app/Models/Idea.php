@@ -880,10 +880,10 @@ class Idea extends Model
     public function scopeWhereFilters($query)
     {
         return $query
-            ->WherePlace()
-            ->WhereTags(MainFilter::getFiltersTagsArray())
-            ->WhereDates()
-            ->WherePrices();
+            ->WherePlace();
+            //->WhereTags(MainFilter::getFiltersTagsArray())
+            //->WhereDates()
+            //->WherePrices();
     }
 
     /**

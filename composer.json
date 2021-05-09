@@ -19,7 +19,8 @@
         "rap2hpoutre/laravel-log-viewer": "^1.7",
         "rtconner/laravel-tagging": "^4.1",
         "spatie/laravel-permission": "^4.0",
-        "tymon/jwt-auth": "^1.0"
+        "tymon/jwt-auth": "^1.0",
+        "ext-json": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
