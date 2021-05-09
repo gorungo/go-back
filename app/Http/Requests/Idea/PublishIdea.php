@@ -39,6 +39,9 @@ class PublishIdea extends FormRequest
                 return request()->input('attributes.created_at') !== null;
             }),
 
+            'relationships.photos' => 'required|array|min:5|max:20',
+            'relationships.places_to_visit' => 'required|array|min:1|max:20',
+
             'relationships.itineraries.*.attributes.title' => 'required',
             'relationships.itineraries.*.attributes.description' => 'required',
 
@@ -49,7 +52,7 @@ class PublishIdea extends FormRequest
             'relationships.dates.*.relationships.ideaPrice.relationships.currency.id' => 'required|integer|exists:currencies,id',
 
             'attributes.options.languages' => 'required|array|min:1',
-            'relationships.photos.array' => 'required|array|min:5',
+
 
         ];
 
