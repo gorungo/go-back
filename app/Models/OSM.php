@@ -33,7 +33,7 @@ class OSM extends Model
 
     public function getRouteKeyName()
     {
-        return 'id';
+        return 'place_id';
     }
 
     public function ideas()
