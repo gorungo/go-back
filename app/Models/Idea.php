@@ -64,8 +64,7 @@ class Idea extends Model
      */
     public static function itemsList(Request $request)
     {
-        return self::joinPlace()
-            ->inFuture()
+        return self::inFuture()
             ->whereFilters()
             //->sorting()
             ->distinct()
