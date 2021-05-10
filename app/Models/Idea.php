@@ -69,7 +69,7 @@ class Idea extends Model
             ->inFuture()
             ->whereFilters()
             //->sorting()
-            //->distinct()
+            ->distinct()
             ->select(['ideas.*', 'osms.coordinates'])
             ->paginate();
 
