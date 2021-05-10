@@ -69,7 +69,7 @@ class Idea extends Model
             ->inFuture()
             ->whereFilters()
             //->sorting()
-            ->distinct()
+            //->distinct()
             ->select(['ideas.*', 'osms.coordinates'])
             ->paginate();
 
@@ -945,7 +945,6 @@ class Idea extends Model
 //            });
 //        }
         if (request()->has('search_type')) {
-            Log::info(request()->input('place_id'));
             switch (request()->input('search_type')) {
                 case 'place_id':
                     return $query->wherePlaceId((int)request()->input('place_id'));
