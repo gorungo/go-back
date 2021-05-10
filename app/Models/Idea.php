@@ -939,18 +939,8 @@ class Idea extends Model
      */
     public function scopeWherePlace($query)
     {
-//        if (request()->has('place_id')) {
-//            return $query->whereHas('ideaPlace', function ($q) {
-//                $q->OrderByPlace();
-//            });
-//        }
-        if (request()->has('search_type')) {
-            switch (request()->input('search_type')) {
-                case 'place_id':
-                    return $query->wherePlaceId((int)request()->input('place_id'));
-                default:
-                    return $query->where('ideas.place_id', (int)request()->input('place_id'));
-            }
+        if (request()->has('place_id')) {
+            return $query->where('ideas.place_id', (int)request()->input('place_id'));
         }
         return $query;
     }
