@@ -46,8 +46,9 @@ class Idea extends JsonResource
                 'created_at' => $this->created_at ? (string)$this->created_at : null,
 
                 'author_intro' => $this->author->profile->description,
-                'booking_info' => $this->author->bookingInfo ? $this->bookingInfo->info : '',
-                'booking_contacts' => $this->author->bookingInfo ? $this->author->bookingInfo->contacts : '',
+
+                'booking_info' => $this->author->profile->bookingInfo ? $this->author->profile->bookingInfo->info : '',
+                'booking_contacts' => $this->author->profile->bookingInfo ? $this->author->profile->bookingInfo->contacts : '',
             ],
 
             'relationships' => [
