@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class Idea extends Model
@@ -66,7 +67,7 @@ class Idea extends Model
     {
         return self::joinPlace()
             ->inFuture()
-            //->whereFilters()
+            ->whereFilters()
             //->sorting()
             ->distinct()
             ->select(['ideas.*', 'osms.coordinates'])
@@ -944,11 +945,12 @@ class Idea extends Model
 //            });
 //        }
         if (request()->has('search_type')) {
+            Log::info(request()->input('place_id'));
             switch (request()->input('search_type')) {
                 case 'place_id':
-                    return $query->wherePlaceId(request()->input('place_id'));
+                    return $query->wherePlaceId((int)request()->input('place_id'));
                 default:
-                    return $query->where('ideas.place_id', request()->input('place_id'));
+                    return $query->where('ideas.place_id', (int)request()->input('place_id'));
             }
         }
         return $query;
