@@ -33,7 +33,7 @@ class RegisterRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            if (!$this->getInvite(request()->input('email')) === request()->input('invite')) {
+            if ($this->getInvite(request()->input('email')) !== request()->input('invite')) {
                 $validator->errors()->add('invite', 'Wrong invite');
             }
         });
