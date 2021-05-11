@@ -48,7 +48,7 @@ class IdeaController extends Controller
 
 
                 case "popular":
-                    return response()->json(IdeaResource::collection(Idea::widgetMainItemsList($request)));
+                    return IdeaResource::collection(Idea::widgetMainItemsList($request));
                     break;
 
                 default:
