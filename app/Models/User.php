@@ -24,6 +24,7 @@ class User extends Authenticatable implements JWTSubject
     use Notifiable, HasRoles, Hashable, HasFactory;
 
     const hidLength = 20;
+    protected $guard_name = 'api';
 
     /**
      * The attributes that are mass assignable.
