@@ -31,7 +31,7 @@ class IdeaController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->has('sectionName')) {
+        if ($request->has('section_name')) {
             switch ($request->sectionName) {
                 case "nearby":
                     return IdeaResource::collection(
