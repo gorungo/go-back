@@ -34,16 +34,16 @@ class IdeaController extends Controller
         if ($request->has('section_name')) {
             switch ($request->section_name) {
                 case "nearby":
-                    return response()->json(IdeaResource::collection(
+                    return IdeaResource::collection(
                         Idea::widgetMainItemsList($request)
-                    ));
+                    );
                     break;
 
 
                 case "base":
-                    return response()->json(IdeaResource::collection(
+                    return IdeaResource::collection(
                         Idea::widgetMainItemsList($request)
-                    ));
+                    );
                     break;
 
 
@@ -73,11 +73,11 @@ class IdeaController extends Controller
         }
         // listing
 
-        return response()->json(IdeaResource::collection(
+        return IdeaResource::collection(
             Idea::itemsList($request)
                 ->loadMissing(request()->has('include') && request()->input('include') != '' ? explode(',',
                     request()->include) : [])
-        ));
+        );
     }
 
     /**
