@@ -223,7 +223,7 @@ class User extends Authenticatable implements JWTSubject
                 'password' => bcrypt($credentials['password'])
             ]);
 
-            $user->assignRoles(config('permission.default_roles'));
+            $user->assignRole(config('permission.default_roles'));
             $user->profile()->create([
                 'name' => $name
             ]);
