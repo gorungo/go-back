@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\User as UserResource;
@@ -48,10 +49,7 @@ class AuthController extends Controller
             return response()->json($validator->errors()->toJson(), 400);
         }
 
-        $user = User::create(array_merge(
-            $request->only(['email']),
-            ['password' => bcrypt($request->password)]
-        ));
+        $user = User::register($request->only(['email', 'password', 'invite']));
 
         return response()->json([
             'message' => 'User successfully registered',

@@ -7,11 +7,13 @@ use App\Http\Requests\User\Store;
 use App\Models\Traits\Hashable;
 use App\Models\Place;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Resources\Json\JsonResource as UserResource;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
@@ -209,5 +211,28 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public static function register($credentials): User
+    {
+        $user = DB::transaction(function () use ($credentials) {
+            $name = explode('@', $credentials['email'])[0];
+            $user = User::create([
+                'email' => $credentials['email'],
+                'name' => $name,
+                'password' => bcrypt($credentials['password'])
+            ]);
+
+            $user->assignRoles(config('permission.default_roles'));
+            $user->profile()->create([
+                'name' => $name
+            ]);
+
+            return $user->fresh();
+        });
+
+        event(new Registered($user));
+
+        return $user;
     }
 }

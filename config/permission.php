@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'default_roles' => ['explorer', 'organizer'],
 
     'models' => [
 
