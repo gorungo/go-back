@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Requests\Auth\Login;
-use App\Http\Requests\Auth\Register;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -27,7 +27,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Login $request)
+    public function login(LoginRequest $request)
     {
         $credentials = $request->only(['email', 'password']);
         if ( !$token = auth()->attempt($credentials)) {
@@ -37,7 +37,7 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
-    public function register(Register $request) {
+    public function register(RegisterRequest $request) {
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|confirmed|min:6',

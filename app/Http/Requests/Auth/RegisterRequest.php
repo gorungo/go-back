@@ -4,7 +4,7 @@ namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Register extends FormRequest
+class RegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -33,13 +33,13 @@ class Register extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            if ($this->getInvite(request()->email) === request()->invite) {
+            if ($this->getInvite(request()->input('email')) === request()->input('invite')) {
                 $validator->errors()->add('invite', 'Wrong invite');
             }
         });
     }
 
-    private function getInvite($email)
+    private function getInvite($email): string
     {
         $l = strlen($email);
         return request()->email . '*' . $l*2 . $l;
