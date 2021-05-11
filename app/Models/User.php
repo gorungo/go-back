@@ -100,12 +100,12 @@ class User extends Authenticatable implements JWTSubject
      */
     Public function getTmbImgPathAttribute()
     {
-        return $this->profile->TmbImgPath ;
+        return $this->profile->tmbImgPath ;
     }
 
     public function getImageUrlAttribute()
     {
-        return asset($this->TmbImgPath);
+        return $this->tmbImgPath ? asset($this->TmbImgPath): null;
     }
 
     /**
