@@ -41,7 +41,7 @@ class Photo extends Model
 
     public function getAbsoluteURLAttribute()
     {
-        return asset($this->storagePath);
+        return $this->storagePath ? asset($this->storagePath) : null;
     }
 
     public function getRelativeURLAttribute()
@@ -51,17 +51,17 @@ class Photo extends Model
 
     public function getImageUrlAttribute()
     {
-        return asset($this->storagePath);
+        return $this->storagePath ? asset($this->storagePath) : null;
     }
 
     public function getImage1xUrlAttribute()
     {
-        return asset($this->storage1xPath);
+        return $this->storage1xPath ? asset($this->storage1xPath) : null;
     }
 
     public function getImage2xUrlAttribute()
     {
-        return asset($this->storage2xPath);
+        return $this->storage2xPath ? asset($this->storage2xPath) : null;
     }
 
     /**
