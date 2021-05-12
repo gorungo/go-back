@@ -52,11 +52,11 @@ class UserIdeaController extends Controller
     /**
      * Show the form for creating a new resource.
      * @param  User  $user
-     * @return JsonResource
+     * @return IdeaResource
      */
-    public function createAndGetEmptyIdea(User $user): JsonResource
+    public function createAndGetEmptyIdea(User $user): IdeaResource
     {
-        return new JsonResource(Idea::createEmptyOfUser($user)->loadMissing([
+        return new IdeaResource(Idea::createEmptyOfUser($user)->loadMissing([
             'ideaPrice',
             'ideaPlace',
             'ideaPlacesToVisit',
