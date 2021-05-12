@@ -27,6 +27,8 @@ class Photo extends JsonResource
             'attributes' => [
                 'order' => $this->order,
                 'image_url' => $this->imageUrl,
+                'image1x_url' => $this->image1xUrl,
+                'image2x_url' => $this->image2xUrl,
                 'image_name' => $this->image_name,
                 'active' => $this->active,
             ],
