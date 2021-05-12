@@ -196,7 +196,7 @@ class Photo extends Model
      * @return array
      */
 
-    public function setMain($minWidth = 400)
+    public function setMain($minWidth = 300)
     {
         try {
             $img = Image::make(public_path($this->relativeURL));
