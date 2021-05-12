@@ -28,7 +28,7 @@ class PublishIdea extends FormRequest
     {
         $rules = [
             'attributes.title' => 'required|min:3|max:100',
-            'attributes.intro' => 'required|min:3|max:199',
+            //'attributes.intro' => 'required|min:3|max:199',
             'attributes.description' => 'required|min:5',
             'attributes.active' => 'required|integer',
 
@@ -42,8 +42,8 @@ class PublishIdea extends FormRequest
             'relationships.photos' => 'required|array|min:5|max:20',
             'relationships.places_to_visit' => 'required|array|min:1|max:20',
 
-            'relationships.itineraries.*.attributes.title' => 'required',
-            'relationships.itineraries.*.attributes.description' => 'required',
+            //'relationships.itineraries.*.attributes.title' => 'required',
+            //'relationships.itineraries.*.attributes.description' => 'required',
 
             'relationships.dates' => 'required|array|nullable',
             'relationships.dates.*.attributes.start_date' => 'required|date',
