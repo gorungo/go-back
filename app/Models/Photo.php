@@ -152,7 +152,7 @@ class Photo extends Model
 
     public function uploadImage(Request $request, string $uploadPath, string $fileName): bool
     {
-        $minWidth = 300;
+        $minWidth = 400;
 
         if ($request->hasFile('image')) {
 
