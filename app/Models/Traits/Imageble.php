@@ -42,6 +42,22 @@ trait Imageble
         return $src;
     }
 
+    public function getTmbImg2xPathAttribute()
+    {
+        $src = $this->tmbImgPath;
+
+        if ($this->id && $this->thmb_file_name && strpos($this->thmb_file_name, '.') > -1) {
+            list($name, $ext) = explode('.', $this->image_name);
+            $fileName2x = $name . 'x2.' . $ext;
+
+            if (Storage::disk('images')->exists( mb_strtolower(class_basename(get_class($this))) . '/' . $this->id . '/' . htmlspecialchars(strip_tags($fileName2x)))) {
+                $src = Storage::disk('images')->url(class_basename(mb_strtolower(get_class($this))) . '/' . $this->id . '/' . htmlspecialchars(strip_tags($fileName2x)));
+            };
+        }
+
+        return $src;
+    }
+
     public function getFullTmbImgPathAttribute()
     {
         return $this->tmbImgPath ? asset($this->tmbImgPath) : null;
@@ -50,6 +66,11 @@ trait Imageble
     public function getImageUrlAttribute()
     {
         return $this->tmbImgPath ? asset($this->tmbImgPath) : null;
+    }
+
+    public function getImage2xUrlAttribute()
+    {
+        return $this->tmbImg2xPath ? asset($this->tmbImg2xPath) : null;
     }
 
 }

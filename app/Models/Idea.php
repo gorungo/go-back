@@ -696,18 +696,17 @@ class Idea extends Model
 
     public function publish()
     {
-        if (!$this->approved_at && config('app.auto_idea_approve')) {
-            $this->approve();
-        }
-
+        $this->approve();
         $this->active = 1;
         $this->save();
     }
 
     public function approve()
     {
-        $this->approved_at = now();
-        $this->save();
+        if (!$this->approved_at && config('app.auto_idea_approve')) {
+            $this->approved_at = now();
+            $this->save();
+        }
     }
 
     public function unPublish()

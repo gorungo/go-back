@@ -16,8 +16,8 @@ class Photo extends Model
 
     public $modelName;
     protected $table = 'photos';
-    protected $thmbWidth = 400;
-    protected $maxImageWidth = 2000; // megabites
+    protected $thmbMaxWidth = 400;
+    protected $maxImageWidth = 2000;
     protected $maxFileSize = 15;
     protected $fillable = [
         'img_name',
@@ -196,35 +196,32 @@ class Photo extends Model
      * @return array
      */
 
-    public function setMain()
+    public function setMain($minWidth = 400)
     {
-
-        // устанавливает главную картинку
-
         try {
             $img = Image::make(public_path($this->relativeURL));
             array_map('unlink', glob(public_path('storage/'.$this->getStoreDirectoryUrl())."/tmb*.*"));
             list($txt, $ext) = explode(".", $this->img_name);
 
-            $newMainPhotoFileName = 'tmb'.Str::random(5).'.'.$ext;
+            $rnd = Str::random(5);
 
-            if ($this->item_type == 'Post') {
-                $img->fit(400, 300);
+            $newMainPhotoFileName = 'tmb' . $rnd . '.' . $ext;
+            $newMainPhotoFileName2x = 'tmb' . $rnd . 'x2' . '.' . $ext;
 
-            } else {
-                if ($this->item_type == 'Idea') {
-                    $img->fit(600, 800);
 
-                } else {
-                    $img->resize($this->thmbWidth, null, function ($constraint) {
-                        $constraint->aspectRatio();
-                    });
+            // firstly save x2 image for retina
+            $img->resize( $minWidth * 2, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $img->stream();
+            Storage::disk('images')->put($this->getStoreDirectoryUrl() . '/' . $newMainPhotoFileName2x, $img, 'public');
+            $img->resize( $minWidth, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
 
-                }
-            }
 
-            $img->stream(); // <-- Key point
-
+            // save normal image
+            $img->stream();
             Storage::disk('images')->put($this->getStoreDirectoryUrl().'/'.$newMainPhotoFileName, $img, 'public');
 
             $this->item->thmb_file_name = $newMainPhotoFileName;
