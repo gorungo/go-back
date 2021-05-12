@@ -54,6 +54,16 @@ class Photo extends Model
         return asset($this->storagePath);
     }
 
+    public function getImage1xUrlAttribute()
+    {
+        return asset($this->storage1xPath);
+    }
+
+    public function getImage2xUrlAttribute()
+    {
+        return asset($this->storage2xPath);
+    }
+
     /**
      * Путь к изобаржению в storage
      */
@@ -61,6 +71,29 @@ class Photo extends Model
     public function getStoragePathAttribute()
     {
         return Storage::disk('images')->url(mb_strtolower($this->item_type).'/'.$this->item_id.'/'.$this->img_name);
+    }
+
+    public function getStorage2xPathAttribute()
+    {
+        if( $this->img_name && strpos($this->img_name, '.') > -1){
+            list($name, $ext) = explode('.', $this->img_name);
+            $fileName2x = $name . 'x2.' . $ext;
+            if (Storage::disk('images')->exists( mb_strtolower($this->item_type).'/'.$this->item_id.'/' . htmlspecialchars(strip_tags($fileName2x)))) {
+                return Storage::disk('images')->url(mb_strtolower($this->item_type).'/'.$this->item_id.'/'.$fileName2x);
+            }
+        }
+        return null;
+    }
+    public function getStorage1xPathAttribute()
+    {
+        if( $this->img_name && strpos($this->img_name, '.') > -1){
+            list($name, $ext) = explode('.', $this->img_name);
+            $fileName1x = $name . 'x1.' . $ext;
+            if (Storage::disk('images')->exists( mb_strtolower($this->item_type).'/'.$this->item_id.'/' . htmlspecialchars(strip_tags($fileName1x)))) {
+                return Storage::disk('images')->url(mb_strtolower($this->item_type).'/'.$this->item_id.'/'.$fileName1x);
+            }
+        }
+        return null;
     }
 
     public function createAndStore(UploadPhoto $request, Model $model, $setMain = false)
@@ -74,11 +107,11 @@ class Photo extends Model
 
             $image = $request->file('image');
             $newFileName = mb_strtolower('img'.Str::random(5).'.'.$image->getClientOriginalExtension());
-            $uploadPath = $this->getStoreDirectoryUrl($model->id).'/'.$newFileName;
+            $uploadPath = $this->getStoreDirectoryUrl($model->id).'/';
 
             // сохраняем изображение на диске в нужной папке, если нужно ресайзим
 
-            if ($this->uploadImage($request, $uploadPath)) {
+            if ($this->uploadImage($request, $uploadPath, $newFileName)) {
 
                 $photoStoreData = [
                     'item_id' => $model->id,
@@ -117,8 +150,9 @@ class Photo extends Model
      * @return bool
      */
 
-    public function uploadImage(Request $request, string $uploadPath): bool
+    public function uploadImage(Request $request, string $uploadPath, string $fileName): bool
     {
+        $minWidth = 300;
 
         if ($request->hasFile('image')) {
 
@@ -132,10 +166,26 @@ class Photo extends Model
                         $constraint->aspectRatio();
                     });
                 }
-
                 $img->stream();
+                Storage::disk('images')->put($uploadPath.$fileName, $img, 'public');
 
-                Storage::disk('images')->put($uploadPath, $img, 'public');
+                [$name,$ext] = explode('.', $fileName);
+
+                $fileName1x = $name . 'x1' . '.' . $ext;
+                $fileName2x = $name . 'x2' . '.' . $ext;
+
+                $img->resize( $minWidth*2, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $img->stream();
+                Storage::disk('images')->put($uploadPath.$fileName2x, $img, 'public');
+
+                $img->resize( $minWidth, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $img->stream();
+                Storage::disk('images')->put($uploadPath.$fileName1x, $img, 'public');
+
                 return Storage::disk('images')->exists($uploadPath);
 
             } catch (\Exception $e) {
