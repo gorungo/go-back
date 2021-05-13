@@ -125,7 +125,7 @@ class Idea extends Model
                 return self::whereCategory($category)
                     ->joinDescription()
                     ->main()
-                    ->isActive()
+                    ->isPublished()
                     ->take($itemsCount)
                     ->inRandomOrder()
                     ->hasImage()
