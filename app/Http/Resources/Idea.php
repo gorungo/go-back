@@ -38,7 +38,7 @@ class Idea extends JsonResource
                 'is_published' => $this->isPublished,
                 'title' => $this->id ? $this->title : '',
                 'intro' => $this->id ? $this->intro : '',
-                'author_id' => $this->author_id,
+                'author_hid' => $this->author->hid,
                 'description' => $this->id ? $this->description : '',
                 'image_url' => $this->imageUrl,
                 'image2x_url' => $this->image2xUrl,
