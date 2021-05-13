@@ -37,7 +37,7 @@ class IdeaPolicy
         }
 
         // can see all published not blocked
-        if (!$idea->isBlocked) {
+        if ($idea->isPublished) {
             return true;
         }
 
