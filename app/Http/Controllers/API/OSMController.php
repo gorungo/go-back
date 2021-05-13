@@ -41,13 +41,14 @@ class OSMController extends Controller
         // обновляем описание места если нет в текущей локали
         // ничего не делаем если не нужно ничего обновлять
 
-        if (!$request->id && !OSM::where('place_id', $request->place_id)->first() && OSM::createAndStore($request)){
-            return response()->json('Created', 201);
+        if (!$request->id && !OSM::where('place_id', $request->place_id)->first()){
+            $place = OSM::createAndStore($request);
+            return new OSMResource($place);
         } else {
             $place = OSM::where('place_id', $request->place_id)->first();
             if($place){
                 $place->updateAndStore($request);
-                return response()->json('Modified', 200);
+                return new OSMResource($place->refresh());
             }else{
                 return response()->json('Already exists, not modified', 200);
             }
