@@ -64,6 +64,7 @@ class Idea extends JsonResource
                     return new IdeaPriceResource($this->minimalFuturePrice);
                 }),
                 'dates' => $this->id ? DateResource::collection($this->whenLoaded('ideaDates')) : [],
+                'future_dates' => $this->id ? DateResource::collection($this->whenLoaded('futureDates')) : [],
                 'tags' => $this->id ? TaggedResource::collection($this->whenLoaded('tagged')) : [],
             ],
         ];

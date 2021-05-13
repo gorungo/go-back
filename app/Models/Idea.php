@@ -279,6 +279,11 @@ class Idea extends Model
         return $this->hasMany('App\Models\IdeaDate');
     }
 
+    public function futureDates()
+    {
+        return $this->hasMany('App\Models\IdeaDate')->whereRaw("TO_DAYS(`start_date`) > TO_DAYS(NOW())");
+    }
+
     /**
      * Основная категория для определения полного url идеи
      * @return BelongsTo
