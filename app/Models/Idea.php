@@ -65,21 +65,14 @@ class Idea extends Model
      */
     public static function itemsList(Request $request)
     {
-        return self::joinPlace()
-            ->inFuture()
-            ->whereFilters()
-            //->sorting()
-            ->distinct()
-            ->select(['ideas.*', 'osms.coordinates'])
-            ->paginate();
 
-        // получаем список активных идей с учетом города, страницы, локали
-        return Cache::tags(['ideas'])->remember('ideas_'.LocaleMiddleware::getLocale().'_category_'.$activeCategoryId.'_'.request()->getQueryString(),
+        return Cache::tags(['ideas'])->remember('ideas_'.request()->getQueryString(),
             0, function () use ($request) {
                 return self::joinPlace()
                     ->inFuture()
                     ->whereFilters()
-                    ->sorting()
+                    ->hasImage()
+                    ->isPublished()
                     ->distinct()
                     ->select(['ideas.*', 'osms.coordinates'])
                     ->paginate();

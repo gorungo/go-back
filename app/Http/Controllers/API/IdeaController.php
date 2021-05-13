@@ -74,8 +74,7 @@ class IdeaController extends Controller
         // listing
 
         return IdeaResource::collection(
-            Idea::itemsList($request)
-                ->loadMissing(request()->has('include') && request()->input('include') != '' ? explode(',',
+            Idea::itemsList($request)->loadMissing(request()->has('include') && request()->input('include') != '' ? explode(',',
                     request()->include) : [])
         );
     }
