@@ -181,13 +181,13 @@ class IdeaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $hid
+     * @param $idea
      * @return JsonResponse
      */
     public function destroy($idea)
     {
         $idea->delete();
-        return response()->json('deleted', 200);
+        return response()->json(['message'=>'deleted'], 200);
     }
 
 

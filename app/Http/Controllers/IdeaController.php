@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Helper;
+use App\Models\Helper;
 use App\Http\Resources\PlaceNoRelationships;
-use App\Idea;
-use App\Category;
+
+use App\Models\Category;
 use App\Http\Requests\Photo\UploadPhoto;
-use App\Page;
-use App\User;
-use App\Place;
+use App\Models\Idea;
+use App\Models\Page;
+use App\Models\User;
+use App\Models\Place;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\Idea\StoreIdea;

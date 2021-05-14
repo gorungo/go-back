@@ -8,7 +8,6 @@ use App\Http\Requests\Idea\StoreIdea;
 use App\Models\Traits\Hashable;
 use App\Models\Traits\Imageble;
 use App\Models\Traits\TagInfo;
-use Conner\Tagging\Taggable;
 use DB;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -23,7 +22,7 @@ use Illuminate\Support\Str;
 
 class Idea extends Model
 {
-    use SoftDeletes, Taggable, TagInfo, Imageble, Hashable, SpatialTrait;
+    use SoftDeletes, TagInfo, Imageble, Hashable, SpatialTrait;
 
     const hidLength = 20;
     public $defaultTmb = null;
