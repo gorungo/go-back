@@ -36,7 +36,7 @@ class PublishIdea extends FormRequest
             'relationships.categories.*.id' => 'required|numeric|exists:categories,id',
 
             'relationships.itineraries' => Rule::requiredIf(function(){
-                return request()->input('attributes.created_at') !== null;
+                //return request()->input('attributes.created_at') !== null;
             }),
 
             'relationships.photos' => 'required|array|min:5|max:20',
