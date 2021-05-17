@@ -35,6 +35,7 @@ class Profile extends JsonResource
 
                 'booking_info' => $this->bookingInfo ? $this->bookingInfo->info : '',
                 'booking_contacts' => $this->bookingInfo ? $this->bookingInfo->contacts : '',
+                'booking_whatsapp' => $this->bookingInfo ? $this->bookingInfo->whatsapp : '',
             ],
 
             'relationships' => [

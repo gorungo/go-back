@@ -80,17 +80,22 @@ class Profile extends Model
 
     public function saveRelationships(Store $request)
     {
-        if($request->input('data.attributes.booking_info') !== '' && $request->input('data.attributes.booking_contacts') != ''){
+        if($request->has('data.attributes.booking_info')
+            && $request->has('data.attributes.booking_contacts')
+            && $request->has('data.attributes.booking_whatsapp')
+        ){
             $bi = $this->bookingInfo;
             if($bi) {
                 $bi->update([
                     'info' => $request->input('data.attributes.booking_info'),
                     'contacts' => $request->input('data.attributes.booking_contacts'),
+                    'whatsapp' => $request->input('data.attributes.booking_whatsapp'),
                 ]);
             }else{
                 $this->bookingInfo()->create([
                     'info' => $request->input('data.attributes.booking_info'),
                     'contacts' => $request->input('data.attributes.booking_contacts'),
+                    'whatsapp' => $request->input('data.attributes.booking_whatsapp'),
                 ]);
             }
         }

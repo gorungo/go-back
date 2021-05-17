@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Idea;
+use App\Observers\IdeaObserver;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 
@@ -46,6 +48,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Idea::observe(IdeaObserver::class);
     }
 }
