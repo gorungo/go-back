@@ -171,9 +171,11 @@ class IdeaController extends Controller
      * @param  Idea  $idea
      * @param  string  $relationship
      * @return JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function updateRelationship(StoreIdea $request, Idea $idea, string $relationship): JsonResponse
     {
+        $this->authorize('update', $idea);
         $idea->updateRelationship($request, $relationship);
         return response()->json($relationship.' relationship updated', 201);
     }
@@ -205,11 +207,12 @@ class IdeaController extends Controller
      * @param  UploadPhoto  $request
      * @param $itemId
      * @return JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function uploadPhoto(UploadPhoto $request, $itemId)
     {
-
         $idea = Idea::where('id', $itemId)->first();
+        $this->authorize('update', $idea);
         if ($idea) {
             return response()->json($idea->uploadPhoto($request));
         }
@@ -232,19 +235,31 @@ class IdeaController extends Controller
         return IdeaResource::collection(Idea::getMain($request->title));
     }
 
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function validateIdea(PublishIdea $request, Idea $idea): JsonResponse
     {
+        $this->authorize('update', $idea);
         return response()->json(['message' => 'ok'], 200);
     }
 
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function publish(PublishIdea $request, Idea $idea): JsonResponse
     {
+        $this->authorize('update', $idea);
         $idea->publish();
         return response()->json(['message' => 'published'], 200);
     }
 
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function unPublish(Request $request, Idea $idea): JsonResponse
     {
+        $this->authorize('update', $idea);
         $idea->unPublish();
         return response()->json(['message' => 'unpublished'], 200);
     }
