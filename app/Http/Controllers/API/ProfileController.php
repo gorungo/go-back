@@ -110,13 +110,15 @@ class ProfileController extends Controller
 
     /**
      * Return list of items photo
-     * @param UploadPhoto $request
+     * @param  UploadPhoto  $request
      * @param $itemId
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function uploadPhoto(UploadPhoto $request, $itemId){
 
         $profile = Profile::where('id', $itemId)->first();
+        $this->authorize('update', $profile);
         if($profile) return response()->json($profile->uploadPhoto($request));
 
         return response()->json(['type' => 'error', 'itemId' => $itemId]);

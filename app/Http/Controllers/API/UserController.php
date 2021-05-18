@@ -51,12 +51,12 @@ class UserController extends Controller
      */
     public function ideas(User $user)
     {
-        return response()->json(IdeaResource::collection($user
+        return IdeaResource::collection($user
             ->ideas()
             ->joinDescription()
             ->get()
-            )
-        );
+            );
+
     }
 
     /**
@@ -71,8 +71,11 @@ class UserController extends Controller
     }
 
 
-
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function setNewPassword(SetNewPassword $request, User $user){
+        $this->authorize('update', $user);
         $result = $user->setNewPassword($request);
         return response([
             'type' => $result,

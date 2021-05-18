@@ -34,9 +34,11 @@ class IdeaItineraryController extends Controller
      * @param  Request  $request
      * @param  Idea  $idea
      * @return ItineraryResource
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request, Idea $idea)
     {
+        $this->authorize('update', $idea);
         $itinerary = DB::transaction(function () use ($request, $idea) {
             $r = $request->post('attributes');
             $descriptionStoreData = [
@@ -67,9 +69,11 @@ class IdeaItineraryController extends Controller
      * @param  Idea  $idea
      * @param  Itinerary  $itinerary
      * @return ItineraryResource
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(StoreIdea $request, Idea $idea, Itinerary $itinerary)
     {
+        $this->authorize('update', $idea);
         return new ItineraryResource($itinerary->update($request));
     }
 
