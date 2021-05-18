@@ -20,7 +20,6 @@ class PlacePolicy
     public function list(User $user)
     {
         return true;
-        //return $user->hasPermissionTo('view places');
     }
 
     /**
@@ -33,7 +32,6 @@ class PlacePolicy
     public function view(User $user, Place $place)
     {
         return true;
-       // return $user->hasPermissionTo('view places');
     }
 
     /**
@@ -56,16 +54,9 @@ class PlacePolicy
      */
     public function update(User $user, Place $place)
     {
-        // if can edit all ideas
         if($user->hasPermissionTo('edit places', 'api')){
-            return true;
+            return $place->author_id === $user->id;
         }
-
-        // if can edit own idea
-        if($user->hasPermissionTo('edit own places', 'api')){
-            //return $place->author_id === $user->id;
-        }
-
         return false;
     }
 
@@ -74,11 +65,14 @@ class PlacePolicy
      *
      * @param  User  $user
      * @param  Place  $place
-     * @return void
+     * @return bool
      */
     public function delete(User $user, Place $place)
     {
-        //
+        if($user->hasPermissionTo('edit places', 'api')){
+            return $place->author_id === $user->id;
+        }
+        return false;
     }
 
     /**

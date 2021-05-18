@@ -41,11 +41,6 @@ class UserPolicy
      */
     public function updateProfile(User $user, User $model)
     {
-        // if can edit all profile
-        if($user->hasPermissionTo('edit profiles', 'api')){
-            return true;
-        }
-
         // if can edit own profile
         if($user->hasPermissionTo('edit profiles', 'api')){
             return $model->id === $user->id;
@@ -65,11 +60,9 @@ class UserPolicy
     {
         // if can edit all users
         if($user->hasPermissionTo('edit profiles', 'api')){
-            return true;
+            return $model->id === $user->id;;
         }
-
-        return $model->id === $user->id;
-
+        return false;
     }
 
     /**
