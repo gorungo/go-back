@@ -43,7 +43,7 @@ class Idea extends JsonResource
                 'image_url' => $this->imageUrl,
                 'image2x_url' => $this->image2xUrl,
                 'place_id' => $this->place_id,
-                'place_title' => $this->ideaPlace ?? $this->ideaPlace->title,
+                'place_title' => $this->ideaPlace ? $this->ideaPlace->title : '',
                 'options' => json_decode($this->options),
                 'created_at' => $this->created_at ? (string)$this->created_at : null,
 
