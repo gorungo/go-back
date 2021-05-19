@@ -106,24 +106,23 @@ class Idea extends Model
      * Get ideas to show on main page sections
      *
      * @param  Request  $request
-     * @param  null  $category
      * @param  int  $itemsCount
      * @return mixed
      */
-    public static function widgetMainItemsList(Request $request, $category = null, $itemsCount = 6)
+    public static function widgetMainItemsList(Request $request, $itemsCount = 6)
     {
-        return Cache::tags(['ideas'])->remember('ideas_widget_'.LocaleMiddleware::getLocale().'_category_'.$category.'_'.request()->getQueryString(),
-            0, function () use ($category, $itemsCount, $request) {
-                return self::whereCategory($category)
-                    ->joinDescription()
-                    ->main()
-                    ->isPublished()
-                    ->take($itemsCount)
-                    ->inRandomOrder()
-                    ->hasImage()
-                    ->get()
-                    ->loadMissing($request->has('include') && $request->input('include') != '' ? explode(',',
-                        $request->include) : []);
+        return Cache::tags(['ideas'])->remember('ideas_widget_'.$itemsCount.'_'.request()->getQueryString(),
+            0, function () use ($itemsCount, $request) {
+                return self::joinPlace()
+                        ->inFuture()
+                        ->whereFilters()
+                        ->hasImage()
+                        ->isPublished()
+                        ->take($itemsCount)
+                        ->distinct()
+                        ->select(['ideas.*', 'osms.coordinates'])
+                        ->paginate()
+                        ->loadMissing($request->has('include') && $request->input('include') != '' ? explode(',', $request->include) : []);
             });
     }
 
