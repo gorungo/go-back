@@ -154,7 +154,16 @@ class OSM extends Model
     {
         $osm = DB::transaction(function () use ($request) {
             $omsData = $request->post();
+
+            $nameExplode = explode(',', $omsData['display_name']);
+            if(count($nameExplode) > 0){
+                $title = $nameExplode[0];
+                $countryTitle = $nameExplode[count($nameExplode) -1];
+            }
+
             $omsDescriptionData = [
+                'title' => $title ?? '',
+                'country_title' => $countryTitle ?? '',
                 'display_name' => $omsData['display_name'],
                 'locale_id' => LocaleMiddleware::getLocaleId(),
                 'place_id' => $omsData['place_id'],
