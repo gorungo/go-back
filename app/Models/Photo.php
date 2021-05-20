@@ -153,6 +153,7 @@ class Photo extends Model
     public function uploadImage(Request $request, string $uploadPath, string $fileName): bool
     {
         $minWidth = 400;
+        $minHeight = 500;
 
         if ($request->hasFile('image')) {
 
@@ -164,6 +165,7 @@ class Photo extends Model
                 if ($img->width() > $this->maxImageWidth) {
                     $img->resize($this->maxImageWidth, null, function ($constraint) {
                         $constraint->aspectRatio();
+                        $constraint->upsize();
                     });
                 }
                 $img->stream();
@@ -174,14 +176,16 @@ class Photo extends Model
                 $fileName1x = $name . 'x1' . '.' . $ext;
                 $fileName2x = $name . 'x2' . '.' . $ext;
 
-                $img->resize( $minWidth*2, null, function ($constraint) {
+                $img->resize( null, $minHeight*2, function ($constraint) {
                     $constraint->aspectRatio();
+                    $constraint->upsize();
                 });
                 $img->stream();
                 Storage::disk('images')->put($uploadPath.$fileName2x, $img, 'public');
 
-                $img->resize( $minWidth, null, function ($constraint) {
+                $img->resize( null, $minHeight, function ($constraint) {
                     $constraint->aspectRatio();
+                    $constraint->upsize();
                 });
                 $img->stream();
                 Storage::disk('images')->put($uploadPath.$fileName1x, $img, 'public');
