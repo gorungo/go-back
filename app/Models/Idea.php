@@ -864,7 +864,7 @@ class Idea extends Model
     public function scopeInFuture($query)
     {
         return $query->whereHas('ideaDates', function ($query) {
-            $query->whereRaw("TO_DAYS(NOW()) < TO_DAYS(`start_date`)");
+            $query->whereRaw("TO_DAYS(NOW()) =< TO_DAYS(`start_date`)");
         })->orDoesntHave('ideaDates');
     }
 
