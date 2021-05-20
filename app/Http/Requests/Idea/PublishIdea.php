@@ -47,7 +47,7 @@ class PublishIdea extends FormRequest
 
             'relationships.dates' => 'required|array|nullable',
             'relationships.dates.*.attributes.start_date' => 'required|date',
-            'relationships.dates.*.attributes.start_time' => 'required|min:8|max:8',
+            'relationships.dates.*.attributes.start_time' => 'sometimes|min:8|max:8',
             'relationships.dates.*.relationships.ideaPrice.attributes.price' => 'required|nullable',
             'relationships.dates.*.relationships.ideaPrice.relationships.currency.id' => 'required|integer|exists:currencies,id',
 
