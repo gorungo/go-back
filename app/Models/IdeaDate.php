@@ -25,6 +25,17 @@ class IdeaDate extends Model
         return $this->hasOne('App\Models\IdeaPrice')->withDefault(['price' => null, 'currency_id' => 3 ]);
     }
 
+    public function getStartTimeAttribute()
+    {
+        if(isset($this->attributes['start_time'])){
+            if($this->attributes['start_time'] === '00:00:00'){
+                return null;
+            }
+            return $this->attributes['start_time'];
+        }
+        return null;
+    }
+
     public function scopeInFuture($query)
     {
         return $query->where(function ($query) {
