@@ -252,6 +252,7 @@ class Photo extends Model
 
     public function setMain($minWidth = 400)
     {
+        $minHeight = 400;
         try {
             $img = Image::make(public_path($this->relativeURL));
             array_map('unlink', glob(public_path('storage/'.$this->getStoreDirectoryUrl())."/tmb*.*"));
@@ -264,12 +265,12 @@ class Photo extends Model
 
 
             // firstly save x2 image for retina
-            $img->resize( $minWidth * 2, null, function ($constraint) {
+            $img->resize( null, $minHeight * 2, function ($constraint) {
                 $constraint->aspectRatio();
             });
             $img->stream();
             Storage::disk('images')->put($this->getStoreDirectoryUrl() . '/' . $newMainPhotoFileName2x, $img, 'public');
-            $img->resize( $minWidth, null, function ($constraint) {
+            $img->resize( null, $minHeight, function ($constraint) {
                 $constraint->aspectRatio();
             });
 
