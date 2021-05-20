@@ -279,7 +279,7 @@ class Idea extends Model
 
     public function futureDates()
     {
-        return $this->hasMany('App\Models\IdeaDate')->whereRaw("TO_DAYS(`start_date`) > TO_DAYS(NOW())");
+        return $this->hasMany('App\Models\IdeaDate')->whereRaw("TO_DAYS(`start_date`) >= TO_DAYS(NOW())");
     }
 
     /**
