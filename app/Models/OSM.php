@@ -66,13 +66,26 @@ class OSM extends Model
         return '';
     }
 
+    public function getCountryTitleAttribute()
+    {
+        if ($this->localisedDescription != null) {
+            return $this->localisedDescription->country_title;
+        } else {
+            if ($this->descriptions()->first()) {
+                return $this->descriptions()->first()->country_title;
+            }
+        }
+
+        return '';
+    }
+
     public function getDisplayNameAttribute()
     {
         if ($this->localisedDescription != null) {
             return $this->localisedDescription->display_name;
         } else {
             if ($this->descriptions()->first()) {
-                return $this->descriptions()->first()->title;
+                return $this->descriptions()->first()->display_name;
             }
         }
 

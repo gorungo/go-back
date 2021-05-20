@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use App\Http\Middleware\LocaleMiddleware;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Address;
+use App\Models\Address;
 use App\Http\Resources\Address as AddressResource;
 use App\Http\Resources\PlaceType as PlaceTypeResource;
 

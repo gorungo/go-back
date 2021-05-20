@@ -11,5 +11,5 @@ class OSMDescription extends Model
 {
     protected $table = 'osm_descriptions';
     public $timestamps = false;
-    protected $fillable = ['place_id', 'locale_id', 'title', 'display_name'];
+    protected $fillable = ['place_id', 'locale_id', 'title', 'country', 'display_name'];
 }
