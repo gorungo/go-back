@@ -24,6 +24,7 @@ class Category extends JsonResource
                 'active' => $this->active ? $this->active : 1,
                 'order' => $this->order ? $this->order : 0,
                 'title' => $this->title,
+                'parent_id' => $this->parent_id,
             ],
 
             'relationships' => [],
