@@ -15,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return CategoryResource::collection(Category::lastChildren());
+        return CategoryResource::collection(Category::getMainCategories());
     }
 
     public function lastChildren()

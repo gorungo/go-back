@@ -177,7 +177,7 @@ class Category extends Model
         return Cache::tags(['category', 'mainIdeaCategories'])
             ->remember('mainIdeaCategories-' . LocaleMiddleware::getLocaleId(), 1, function () {
 
-            return self::MainCategory()
+            return self::mainCategory()
                 ->JoinDescription()
                 ->IsActive()
                 ->orderBy('order', 'desc')
