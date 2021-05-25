@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Http\Middleware\LocaleMiddleware;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class Category extends Model
 {
@@ -187,6 +188,11 @@ class Category extends Model
 
     }
 
+    public function allCategories()
+    {
+        return Category::isActive()->get();
+    }
+
     public static function getCategoriesForSelector($activeCategory){
 
         $categories = null;
@@ -233,7 +239,7 @@ class Category extends Model
 
     private function generateSlug(String $title)
     {
-        return str_slug($title);
+        return Str::slug($title);
     }
 
 

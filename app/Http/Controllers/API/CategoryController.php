@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Http\Requests\Category\StoreCategory;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Category as CategoryResource;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -13,9 +14,19 @@ class CategoryController extends Controller
      * Display a listing of the resource.
      *
      */
-    public function index()
+    public function index(Request $request)
     {
-        return CategoryResource::collection(Category::getMainCategories());
+        return CategoryResource::collection(Category::where(function ($q) use ($request) {
+            if ($request->has('active')) {
+                $q->where('active', (int)$request->active);
+            } else {
+                $q->where('active', 1);
+            }
+
+            if ($request->has('parent_id')) {
+                $q->where('parent_id', (int)$request->parent_id);
+            }
+        })->get());
     }
 
     public function lastChildren()
