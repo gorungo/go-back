@@ -67,7 +67,8 @@ class Idea extends Model
 
         return Cache::tags(['ideas'])->remember('ideas_'.request()->getQueryString(),
             0, function () use ($request) {
-                return self::joinPlace()
+                return self::whereCategory()
+                    ->joinPlace()
                     ->inFuture()
                     ->whereFilters()
                     ->hasImage()
@@ -763,11 +764,8 @@ class Idea extends Model
 
     public function scopeWhereCategory($query, Category $activeCategory = null)
     {
-
         if ($activeCategory) {
-
             $childCategories = $activeCategory->allCategoryChildrenArray();
-
             return $query->whereIn('ideas.id', function ($query) use ($childCategories) {
                 $query->select('idea_id')
                     ->from('idea_category')
