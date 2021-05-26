@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Http\Middleware\LocaleMiddleware;
-use App\Http\Requests\Idea\PublishIdea;
 use App\Http\Requests\Idea\StoreIdea;
 use App\Models\Traits\Hashable;
 use App\Models\Traits\Imageble;
@@ -17,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class Idea extends Model
@@ -64,10 +62,13 @@ class Idea extends Model
      */
     public static function itemsList(Request $request)
     {
-
         return Cache::tags(['ideas'])->remember('ideas_'.request()->getQueryString(),
             0, function () use ($request) {
-                return self::whereCategory()
+                $category = null;
+                if ($request->has('category_id') && (int) $request->category_id) {
+                    $category = Category::find($request->category_id);
+                }
+                return self::whereCategory($category)
                     ->joinPlace()
                     ->inFuture()
                     ->whereFilters()
@@ -115,15 +116,16 @@ class Idea extends Model
         return Cache::tags(['ideas'])->remember('ideas_widget_'.$itemsCount.'_'.request()->getQueryString(),
             0, function () use ($itemsCount, $request) {
                 return self::joinPlace()
-                        ->inFuture()
-                        ->whereFilters()
-                        ->hasImage()
-                        ->isPublished()
-                        ->take($itemsCount)
-                        ->distinct()
-                        ->select(['ideas.*', 'osms.coordinates'])
-                        ->paginate()
-                        ->loadMissing($request->has('include') && $request->input('include') != '' ? explode(',', $request->include) : []);
+                    ->inFuture()
+                    ->whereFilters()
+                    ->hasImage()
+                    ->isPublished()
+                    ->take($itemsCount)
+                    ->distinct()
+                    ->select(['ideas.*', 'osms.coordinates'])
+                    ->paginate()
+                    ->loadMissing($request->has('include') && $request->input('include') != '' ? explode(',',
+                        $request->include) : []);
             });
     }
 
@@ -933,7 +935,7 @@ class Idea extends Model
     public function scopeWherePlace($query)
     {
         if (request()->has('place_id')) {
-            return $query->where('ideas.place_id', (int)request()->input('place_id'));
+            return $query->where('ideas.place_id', (int) request()->input('place_id'));
         }
         return $query;
     }
