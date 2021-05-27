@@ -63,7 +63,7 @@ class Idea extends Model
     public static function itemsList(Request $request)
     {
         return Cache::tags(['ideas'])->remember('ideas_'.request()->getQueryString(),
-            0, function () use ($request) {
+            10, function () use ($request) {
                 $category = null;
                 if ($request->has('category_id') && (int) $request->category_id) {
                     $category = Category::find($request->category_id);

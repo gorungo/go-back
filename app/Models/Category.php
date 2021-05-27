@@ -321,49 +321,33 @@ class Category extends Model
 
     public function allCategoryChildrenArray()
     {
-
-        $subcategoryCashLifeTime = 10;
+        $cashLifeTime = 100;
         $needCache = true;
-
         $categoriesId = [];
-
         $categoriesId[] = $this->id;
 
         if (Cache::tags(['category'])->has('category_id_children_array_' . $this->id) && $needCache) {
-            $categories_id = Cache::tags(['category'])->get('category_id_children_array_' . $this->id);
+            $categoriesId = Cache::tags(['category'])->get('category_id_children_array_' . $this->id);
         } else {
             if (isset($this->categoryChildren)) {
-
                 foreach ($this->categoryChildren as $children) {
-
-
                     if (isset($children->id)) $categoriesId[] = $children->id;
-
                     if (isset($children->categoryChildren)) {
-
                         foreach ($children->categoryChildren as $children_children) {
-
-
                             if (isset($children_children->id)) {
-
                                 $categoriesId[] = $children_children->id;
                             }
-
                         }
                     }
-
-
                 }
             } else {
                 $categoriesId[] = $this->id;
             }
 
-            Cache::tags(['category'])->put('category_id_children_array_' . $this->id, $categoriesId, $subcategoryCashLifeTime);
+            Cache::tags(['category'])->put('category_id_children_array_' . $this->id, $categoriesId, $cashLifeTime);
         }
 
-
         return $categoriesId;
-
 
     }
 
