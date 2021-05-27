@@ -39,8 +39,11 @@ class PublishIdea extends FormRequest
                 //return request()->input('attributes.created_at') !== null;
             }),
 
+            'relationships.places' => 'array|required',
+            'relationships.places.*.id' => 'required|exists:osms,id',
+
             'relationships.photos' => 'required|array|min:5|max:20',
-            'relationships.places_to_visit' => 'required|array|min:1|max:20',
+            'relationships.places_to_visit' => 'required|array|min:1|max:20|exists:osms,id',
 
             //'relationships.itineraries.*.attributes.title' => 'required',
             //'relationships.itineraries.*.attributes.description' => 'required',
@@ -55,18 +58,6 @@ class PublishIdea extends FormRequest
 
 
         ];
-
-        if(!Auth()->user()->can('createMainIdea')){
-            $rules[] = [
-                'relationships.idea.id' => 'required|integer|exists:ideas,id',
-
-                'relationships.places' => 'array|required',
-                'relationships.places.*.id' => 'required|exists:places,id',
-
-                'relationships.dates' => 'array|required',
-                'relationships.dates.*.attributes.start_datetime_utc' => 'date',
-            ];
-        }
 
         return $rules;
     }
