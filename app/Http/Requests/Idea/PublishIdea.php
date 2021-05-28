@@ -39,8 +39,7 @@ class PublishIdea extends FormRequest
                 //return request()->input('attributes.created_at') !== null;
             }),
 
-            'relationships.places' => 'array|required',
-            'relationships.places.*.id' => 'required|exists:osms,id',
+            'relationships.place' => 'required|exists:osms,id',
 
             'relationships.photos' => 'required|array|min:5|max:20',
             'relationships.places_to_visit' => 'required|array|min:1|max:20|exists:osms,id',
