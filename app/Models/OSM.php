@@ -21,6 +21,7 @@ class OSM extends Model
 {
     use SpatialTrait;
     private $method = 'get';
+
     protected $table = 'osms';
     protected $fillable = [
         'boundingbox', 'icon', 'importance', 'lat', 'lon', 'licence', 'osm_id',
