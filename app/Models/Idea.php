@@ -479,7 +479,6 @@ class Idea extends Model
 
         $this->saveCategories($r['categories']);
         $this->saveItineraries($r['itineraries']);
-        //$this->saveTags($r['tags']);
         $this->savePlace($r['place']);
         $this->savePlacesToVisit($r['places_to_visit']);
         $this->saveDates($r['dates']);
@@ -602,11 +601,7 @@ class Idea extends Model
                     $placeIds[] = $newPlace->id;
                 }
             }
-
-            if (count($placeIds)) {
-                $this->ideaPlacesToVisit()->sync($placeIds);
-            }
-
+            $this->ideaPlacesToVisit()->sync($placeIds);
         }
     }
 
