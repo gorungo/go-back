@@ -601,8 +601,8 @@ class Idea extends Model
                     $placeIds[] = $newPlace->id;
                 }
             }
-            $this->ideaPlacesToVisit()->sync($placeIds);
         }
+        $this->ideaPlacesToVisit()->sync($placeIds);
     }
 
     public function ideaPlacesToVisit(): BelongsToMany
