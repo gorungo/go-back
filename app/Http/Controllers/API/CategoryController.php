@@ -26,7 +26,7 @@ class CategoryController extends Controller
             if ($request->has('parent_id')) {
                 $q->where('parent_id', (int)$request->parent_id);
             }
-        })->get());
+        })->orderBy('order', 'asc')->get());
     }
 
     public function lastChildren()
