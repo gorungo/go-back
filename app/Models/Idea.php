@@ -436,7 +436,7 @@ class Idea extends Model
             $localeId = LocaleMiddleware::getLocaleId();
 
             $storeData = [
-                'idea_id' => $request->input('relationships.idea.id'),
+                'idea_type_id' => $request->input('attributes.idea_type_id'),
                 'active' => $request->input('attributes.active'),
             ];
 
