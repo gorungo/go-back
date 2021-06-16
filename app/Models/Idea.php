@@ -27,7 +27,7 @@ class Idea extends Model
     protected $table = 'ideas';
     protected $perPage = 60;
     protected $dates = ['deleted_at'];
-    protected $fillable = ['author_id', 'idea_id', 'parent_id', 'main_category_id', 'active', 'order', 'slug'];
+    protected $fillable = ['author_id', 'idea_id', 'parent_id', 'main_category_id', 'active', 'order', 'slug', 'idea_type_id'];
     protected $with = ['localisedIdeaDescription', 'ideaMainCategory', 'ideaPlace'];
     protected $spatialFields = [
         'coordinates',
