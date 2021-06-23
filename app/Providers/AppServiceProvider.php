@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
             'Place' => 'App\Models\Place',
             'Profile' => 'App\Models\Profile',
             'User' => 'App\Models\User',
-            'Helper' => 'App\Models\Helper',
+            'Helper' => 'App\Classes\Helper',
 
             // 'как-храним' => 'класс',
         ]);

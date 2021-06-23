@@ -45,6 +45,7 @@ Route::group(['prefix' => 'v1'], function() {
         Route::post('logout', [AuthController::class, 'logout']);
         Route::post('refresh', [AuthController::class, 'refresh']);
         Route::post('me', [AuthController::class, 'me']);
+        Route::post('sendVerificationCode', [AuthController::class, 'sendVerificationCode']);
 
     });
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Classes;
 
 
 class Helper
@@ -30,5 +30,11 @@ class Helper
             'ЧТ' , 'ПТ' , 'СБ'
         );
         return $days[$dayNum];
+    }
+
+    public static function clearPhone($phone)
+    {
+        $phone = str_replace(["+7"], "7", $phone);
+        return str_replace(["-", "(", ")", " ", "+"], "", $phone);
     }
 }

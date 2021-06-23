@@ -242,7 +242,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'MainFilter' => App\Models\MainFilter::class,
-        'Helper' => App\Models\Helper::class,
+        'Helper' => App\Classes\Helper::class,
 
     ],
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
+use App\Services\PhoneVerificationService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -87,6 +88,21 @@ class AuthController extends Controller
     public function refresh()
     {
         return $this->respondWithToken(auth()->refresh());
+    }
+
+    /**
+     * Send phone validation sms.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendVerificationCode()
+    {
+        $pvs = new PhoneVerificationService();
+        $pvs->test = true;
+
+        return response()->json([
+            'phone_verification' => $pvs->createVerificationAndSendCode(request()->input('data.phone'))
+        ]);
     }
 
     /**
