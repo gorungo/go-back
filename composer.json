@@ -20,7 +20,8 @@
         "rtconner/laravel-tagging": "^4.1",
         "spatie/laravel-permission": "^4.0",
         "tymon/jwt-auth": "^1.0",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-curl": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
