@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Classes\Helper;
 use App\Classes\SMS;
 use App\Models\PhoneVerification;
+use App\Http\Resources\PhoneVerification  as PhoneVerificationResource;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 
@@ -36,7 +37,7 @@ class PhoneVerificationService
         }
 
         PhoneVerification::wherePhone($phone)->IsActive()->delete();
-        return PhoneVerification::createVerification($phone, $newCode, $smsResult->sms_id ?? 0);
+        return new PhoneVerificationResource(PhoneVerification::createVerification($phone, $newCode, $smsResult->sms_id ?? 0));
     }
 
 }
