@@ -15,9 +15,8 @@ class PhoneVerification extends Model
     public $timestamps = false;
     protected $fillable = ['phone', 'code', 'exp_date', 'sms_id'];
 
-    private $test = false;
     private $maxAttemptsCount = 3;
-    private $codeFreshTime = 2 ; // время на проверку кода в минутах
+    const codeFreshTime = 2; // время на проверку кода в минутах
 
     public static function createVerification($phone, $code, $smsId)
     {
@@ -26,7 +25,7 @@ class PhoneVerification extends Model
             'code' => $code,
             'sms_id' => $smsId,
             'attempts' => 0,
-            'exp_date' => date('Y-m-d H:i:s', strtotime('2 minute')),
+            'exp_date' => date('Y-m-d H:i:s', strtotime(self::codeFreshTime . ' minute')),
         ]);
     }
 
