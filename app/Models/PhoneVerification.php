@@ -13,7 +13,7 @@ class PhoneVerification extends Model
 {
     protected $table = 'phone_verifications';
     public $timestamps = false;
-    protected $fillable = ['phone', 'code', 'exp_date', 'sms_id'];
+    protected $fillable = ['phone', 'code', 'exp_date', 'sms_id', 'attempts'];
 
     private $maxAttemptsCount = 3;
     const codeFreshTime = 2; // время на проверку кода в минутах
