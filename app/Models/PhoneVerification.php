@@ -25,6 +25,7 @@ class PhoneVerification extends Model
             'phone' => Helper::clearPhone($phone),
             'code' => $code,
             'sms_id' => $smsId,
+            'attempts' => 0,
             'exp_date' => date('Y-m-d H:i:s', strtotime('2 minute')),
         ]);
     }

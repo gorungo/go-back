@@ -18,30 +18,25 @@ class PhoneVerificationService
     public function createVerificationAndSendCode($phone)
     {
         $smsConfig = config('services.smsru');
-        if(!$smsConfig['active']) return false;
-
         $newCode = rand(100000, 999999);
 
-        //устанавливаем срок проверки смс в 2 минуты
-        $exp_date = date('Y-m-d H:i:s', strtotime('2 minute'));
+        if($smsConfig['active']){
+            $sms = New SMS();
+            $data = New \stdClass();
 
-        $sms = New SMS();
-        $data = New \stdClass();
+            $data->to = $phone;
+            $data->text = "Gorungo code: " . $newCode;
 
-        $data->to = $phone;
-        $data->text = "Gorungo code: " . $newCode;
+            if ($this->test) {
+                $data->test = 1;
+            }
 
-        if ($this->test) {
-            $data->test = 1;
+            $smsResult = $sms->send_one($data);
+
         }
 
         PhoneVerification::wherePhone($phone)->IsActive()->delete();
-
-        if (App::environment('production')) {
-            $smsResult = $sms->send_one($data);
-        }
-
-        return PhoneVerification::createVerification($phone, $newCode, $smsResult->sms_id ?? null);
+        return PhoneVerification::createVerification($phone, $newCode, $smsResult->sms_id ?? 0);
     }
 
 }
