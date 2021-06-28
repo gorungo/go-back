@@ -115,12 +115,12 @@ class AuthController extends Controller
     {
         $pvs = new PhoneVerificationService();
 
-        $res = $pvs->checkVerificationCode([
+        $result = $pvs->checkVerificationCode([
             'phone' => $request->input('data.phone'),
             'code' => $request->input('data.phone'),
         ]);
 
-        if($res){
+        if($result){
             $response = [
                 'status' => 'ok',
                 'message' => 'verified'
@@ -134,12 +134,12 @@ class AuthController extends Controller
             }
 
             return response()->json($response);
-        } else {
-            return response()->json([
-                'type' => 'false',
-                'message' => 'code not valid'
-            ], 401);
         }
+
+        return response()->json([
+            'type' => 'false',
+            'message' => 'code not valid'
+        ], 401);
     }
 
     /**
