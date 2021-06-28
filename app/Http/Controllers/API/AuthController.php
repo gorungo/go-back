@@ -4,10 +4,12 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\SendVerificationCodeRequest;
+use App\Http\Requests\Auth\CheckVerificationCodeRequest;
+
 use App\Models\User;
 use App\Services\PhoneVerificationService;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\Request;
+
 use App\Http\Controllers\Controller;
 use App\Http\Resources\User as UserResource;
 use Illuminate\Support\Facades\Validator;
@@ -76,7 +78,6 @@ class AuthController extends Controller
     public function logout()
     {
         auth()->logout();
-
         return response()->json(['message' => 'Successfully logged out']);
     }
 
@@ -95,14 +96,50 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function sendVerificationCode()
+    public function sendVerificationCode(SendVerificationCodeRequest $request)
     {
         $pvs = new PhoneVerificationService();
         $pvs->test = true;
 
         return response()->json([
-            'phone_verification' => $pvs->createVerificationAndSendCode(request()->input('data.phone'))
+            'phone_verification' => $pvs->createVerificationAndSendCode($request->input('data.phone'))
         ]);
+    }
+
+    /**
+     * Send phone validation sms.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkVerificationCode(CheckVerificationCodeRequest $request)
+    {
+        $pvs = new PhoneVerificationService();
+
+        $res = $pvs->checkVerificationCode([
+            'phone' => $request->input('data.phone'),
+            'code' => $request->input('data.phone'),
+        ]);
+
+        if($res){
+            $response = [
+                'status' => 'ok',
+                'message' => 'verified'
+            ];
+
+            // send jwt token if login mode
+            if($request->has('data.type') && $request->input('data.type') === 'login'){
+                $user = User::wherePhone($request->input('data.phone'))->first();
+                $token = $this->respondWithToken(auth()->login($user));
+                $response['token'] = $token;
+            }
+
+            return response()->json($response);
+        } else {
+            return response()->json([
+                'type' => 'false',
+                'message' => 'code not valid'
+            ], 401);
+        }
     }
 
     /**

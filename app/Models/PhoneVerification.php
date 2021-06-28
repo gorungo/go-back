@@ -29,20 +29,22 @@ class PhoneVerification extends Model
         ]);
     }
 
-    public function checkCode($phone, $code) : bool
+    /**
+     * @param $code
+     * @return bool
+     */
+    public function checkCode($code) : bool
     {
-
         if($this->attempts === $this->maxAttemptsCount){
             return false;
         }
 
-        if ($this->phone == Helper::clearPhone($phone) && $this->code === (int)$code) {
+        if ($this->code === (int)$code) {
             return true;
         } else {
             $this->attempts = $this->attempts + 1;
             $this->save();
             return false;
-
         }
     }
 
