@@ -25,7 +25,7 @@ class CheckVerificationCodeRequest extends FormRequest
     {
         return [
             'data.phone' => 'required',
-            'data.code' => 'required|number',
+            'data.code' => 'required|numeric',
             'data.mode' => 'required'
         ];
     }
