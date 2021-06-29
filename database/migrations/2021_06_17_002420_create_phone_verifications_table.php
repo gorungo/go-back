@@ -14,14 +14,12 @@ class CreatePhoneVerificationsTable extends Migration
     public function up()
     {
         Schema::create('phone_verifications', function (Blueprint $table) {
-
             $table->id();
             $table->string('phone',20);
             $table->string('code',6);
             $table->string('sms_id',20)->nullable();
             $table->string('attempts',20);
-            $table->date('exp_date');
-
+            $table->timestamp('exp_date');
         });
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Classes;
 
+use Illuminate\Support\Facades\Log;
+
 class SMS
 {
     private $ApiKey;
@@ -39,7 +41,8 @@ class SMS
             return $temp;
         }
         else {
-            return $resp;
+            Log::error($resp);
+            return false;
         }
 
     }
