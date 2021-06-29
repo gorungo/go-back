@@ -137,8 +137,10 @@ class AuthController extends Controller
                     $q->wherePhone(Helper::clearPhone($request->input('data.phone')));
                 })->first();
 
-                $token = $this->respondWithToken(auth()->login($user));
-                $response['token'] = $token;
+                if($user){
+                    $token = $this->respondWithToken(auth()->login($user));
+                    $response['token'] = $token;
+                }
             }
 
             return response()->json($response);
