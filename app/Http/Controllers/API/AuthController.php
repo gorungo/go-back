@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Classes\Helper;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\SendVerificationCodeRequest;
 use App\Http\Requests\Auth\CheckVerificationCodeRequest;
 
+use App\Models\Profile;
 use App\Models\User;
 use App\Services\PhoneVerificationService;
 
@@ -127,12 +129,14 @@ class AuthController extends Controller
             $response = [
                 'status' => 'ok',
                 'message' => 'verified',
-                'd' => $request->input('data.mode'),
             ];
 
             // send jwt token if login mode
             if($request->has('data.mode') && $request->input('data.mode') == 'login'){
-                $user = User::wherePhone($request->input('data.phone'))->first();
+                $user = User::whereHas('profile', function($q) use ($request){
+                    $q->wherePhone(Helper::clearPhone($request->input('data.phone')));
+                })->first();
+
                 $token = $this->respondWithToken(auth()->login($user));
                 $response['token'] = $token;
             }
