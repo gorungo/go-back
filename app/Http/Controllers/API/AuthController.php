@@ -14,6 +14,7 @@ use App\Services\PhoneVerificationService;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\User as UserResource;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -138,6 +139,7 @@ class AuthController extends Controller
                 })->first();
 
                 if($user){
+                    Log::info($user->id);
                     $token = $this->respondWithToken(auth()->login($user));
                     $response['token'] = $token;
                 }
