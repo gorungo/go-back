@@ -8,6 +8,7 @@ use App\Http\Requests\Profile\Store;
 use App\Models\Traits\Hashable;
 use DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -40,9 +41,9 @@ class Profile extends Model
         return $profile;
     }
 
-    public function user()
+    public function user() : BelongsTo
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class);
     }
 
     public function bookingInfo() : HasOne
