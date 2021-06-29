@@ -134,6 +134,7 @@ class AuthController extends Controller
 
             // send jwt token if login mode
             if($request->has('data.mode') && $request->input('data.mode') == 'login'){
+                Log::info(Helper::clearPhone($request->input('data.phone')));
                 $user = User::whereHas('profile', function($q) use ($request){
                     $q->wherePhone(Helper::clearPhone($request->input('data.phone')));
                 })->first();
