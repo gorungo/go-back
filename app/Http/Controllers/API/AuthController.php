@@ -120,16 +120,18 @@ class AuthController extends Controller
         $result = $pvs->checkVerificationCode([
             'phone' => $request->input('data.phone'),
             'code' => $request->input('data.code'),
+            'mode' => $request->input('data.mode'),
         ]);
 
         if($result){
             $response = [
                 'status' => 'ok',
-                'message' => 'verified'
+                'message' => 'verified',
+                'd' => $request->input('data.mode'),
             ];
 
             // send jwt token if login mode
-            if($request->has('data.type') && $request->input('data.type') === 'login'){
+            if($request->has('data.mode') && $request->input('data.mode') == 'login'){
                 $user = User::wherePhone($request->input('data.phone'))->first();
                 $token = $this->respondWithToken(auth()->login($user));
                 $response['token'] = $token;
