@@ -140,8 +140,7 @@ class AuthController extends Controller
 
                 if($user){
                     $r = auth()->login($user);
-                    Log::info($r);
-                    $token = $this->respondWithToken($r);
+                    $token = $r;
                     $response['token'] = $token;
                 }
             }
