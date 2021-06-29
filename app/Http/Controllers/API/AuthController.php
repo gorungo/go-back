@@ -139,7 +139,7 @@ class AuthController extends Controller
                 })->first();
 
                 if($user){
-                    $token = $this->respondWithToken(auth()->login($user));
+                    $token = $this->respondWithToken(auth()->login($user)->original);
                     $response['token'] = $token;
                 }
             }
