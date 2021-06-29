@@ -39,7 +39,7 @@ class PhoneVerification extends Model
             return false;
         }
 
-        if ($this->code === (int)$code) {
+        if ($this->code == $code) {
             return true;
         } else {
             $this->attempts = $this->attempts + 1;

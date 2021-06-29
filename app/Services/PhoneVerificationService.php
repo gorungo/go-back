@@ -6,6 +6,7 @@ namespace App\Services;
 use App\Classes\SMS;
 use App\Models\PhoneVerification;
 use App\Http\Resources\PhoneVerification  as PhoneVerificationResource;
+use Illuminate\Support\Facades\Log;
 
 class PhoneVerificationService
 {
@@ -40,8 +41,10 @@ class PhoneVerificationService
     {
         $phoneVerification = PhoneVerification::wherePhone($data['phone'])->isActive()->first();
         if(!$phoneVerification) return false;
+        Log::info('pv ' . $phoneVerification->id);
 
         if($phoneVerification){
+            Log::info('code ' . $data['code']);
             return $phoneVerification->checkCode($data['code']);
         }
 
