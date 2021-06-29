@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Classes\Helper;
 use App\Http\Requests\Photo\UploadProfilePhoto;
 use App\Http\Requests\Profile\Store;
 use App\Models\Traits\Hashable;
@@ -73,7 +74,9 @@ class Profile extends Model
 
     public function updateAndSync(Store $request)
     {
-        $this->update($request->input('data.attributes'));
+        $storeData = $request->input('data.attributes');
+        $storeData['phone'] = Helper::clearPhone($storeData['phone']);
+        $this->update($request->input($storeData));
         $this->saveRelationships($request);
         return $this;
     }
@@ -89,13 +92,13 @@ class Profile extends Model
                 $bi->update([
                     'info' => $request->input('data.attributes.booking_info'),
                     'contacts' => $request->input('data.attributes.booking_contacts'),
-                    'whatsapp' => $request->input('data.attributes.booking_whatsapp'),
+                    'whatsapp' => Helper::clearPhone($request->input('data.attributes.booking_whatsapp')),
                 ]);
             }else{
                 $this->bookingInfo()->create([
                     'info' => $request->input('data.attributes.booking_info'),
                     'contacts' => $request->input('data.attributes.booking_contacts'),
-                    'whatsapp' => $request->input('data.attributes.booking_whatsapp'),
+                    'whatsapp' => Helper::clearPhone($request->input('data.attributes.booking_whatsapp')),
                 ]);
             }
         }

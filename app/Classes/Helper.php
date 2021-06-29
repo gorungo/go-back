@@ -34,7 +34,7 @@ class Helper
 
     public static function clearPhone($phone)
     {
-        $phone = str_replace(["+7"], "7", $phone);
+        $phone = str_replace(["+"], "", $phone);
         return str_replace(["-", "(", ")", " ", "+"], "", $phone);
     }
 }

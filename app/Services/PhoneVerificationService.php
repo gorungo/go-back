@@ -41,10 +41,8 @@ class PhoneVerificationService
     {
         $phoneVerification = PhoneVerification::wherePhone($data['phone'])->isActive()->first();
         if(!$phoneVerification) return false;
-        Log::info('pv ' . $phoneVerification->id);
 
         if($phoneVerification){
-            Log::info('code ' . $data['code']);
             return $phoneVerification->checkCode($data['code']);
         }
 
