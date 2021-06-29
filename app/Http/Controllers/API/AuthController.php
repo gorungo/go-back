@@ -119,7 +119,7 @@ class AuthController extends Controller
 
         $result = $pvs->checkVerificationCode([
             'phone' => $request->input('data.phone'),
-            'code' => $request->input('data.phone'),
+            'code' => $request->input('data.code'),
         ]);
 
         if($result){
