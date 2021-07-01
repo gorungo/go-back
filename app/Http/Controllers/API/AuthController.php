@@ -151,7 +151,7 @@ class AuthController extends Controller
         return response()->json([
             'type' => 'false',
             'message' => 'code not valid'
-        ], 401);
+        ], 200);
     }
 
     /**
