@@ -120,7 +120,7 @@ class Idea extends Model
             0, function () use ($itemsCount, $request) {
                 return self::joinPlace()
                     ->joinIdeaDates()
-                    ->select(['ideas.*', 'idea_dates.start_date', 'osms.coordinates'])
+                    ->select(['ideas.*', DB::raw(MIN('idea_dates.start_date')), 'osms.coordinates'])
                     ->inFuture()
                     ->whereFilters()
                     ->hasImage()
