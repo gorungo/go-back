@@ -126,8 +126,7 @@ class Idea extends Model
                     ->isPublished()
                     ->take($itemsCount)
                     ->distinct()
-                    ->select(['ideas.*', 'idea_dates.start_date', 'osms.coordinates'])
-                    ->groupBy('start_date')
+                    ->select(['ideas.*', DB::raw('MAX(idea_dates.start_date) AS idea_start_date)'), 'osms.coordinates'])
                     ->orderByStartDate()
                     ->paginate()
                     ->loadMissing($request->has('include') && $request->input('include') != '' ? explode(',',
@@ -757,7 +756,7 @@ class Idea extends Model
 
     public function scopeOrderByStartDate($query)
     {
-        $query->orderBy('idea_dates.start_date', 'asc');
+        $query->orderBy('idea_start_date', 'asc');
     }
 
 
