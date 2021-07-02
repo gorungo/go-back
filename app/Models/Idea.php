@@ -68,7 +68,9 @@ class Idea extends Model
                 if ($request->has('category_id') && (int) $request->category_id) {
                     $category = Category::find($request->category_id);
                 }
+
                 return self::whereCategory($category)
+                    ->select(['ideas.*', 'idea_dates.start_date', 'osms.coordinates'])
                     ->joinPlace()
                     ->joinIdeaDates()
                     ->inFuture()
@@ -77,7 +79,6 @@ class Idea extends Model
                     ->isPublished()
                     ->distinct()
                     ->orderByStartDate()
-                    ->select(['ideas.*', 'idea_dates.start_date','osms.coordinates'])
                     ->paginate();
             });
     }
@@ -96,11 +97,14 @@ class Idea extends Model
         return Cache::tags(['ideas'])->remember('ideas_widget_'.LocaleMiddleware::getLocale().'_category_'.$category.'_'.request()->getQueryString(),
             0, function () use ($request, $placeId, $category, $itemsCount) {
                 return self::whereCategory($category)
+                    ->joinIdeaDates()
                     ->wherePlaceId($placeId)
                     ->joinIdeaDates()
                     ->joinDescription()
                     ->inFuture()
+                    ->groupBy('ideas.id')
                     ->take($itemsCount)
+                    ->orderByStartDate()
                     ->get()
                     ->loadMissing($request->has('include') && $request->input('include') != '' ? explode(',',
                         $request->include) : []);
@@ -167,13 +171,6 @@ class Idea extends Model
         ];
     }
 
-    public static function getByTitle(string $title)
-    {
-        return self::whereHas('ideaDescriptions', function ($query) use ($title) {
-            $query->where('title', 'like', '%'.$title.'%');
-        })->take(20)->get();
-    }
-
     public static function getMain()
     {
         return self::main()->take(50)->get();
@@ -231,24 +228,6 @@ class Idea extends Model
     public function getHasIdeasAttribute()
     {
         return $this->futureIdeaIdeas()->count();
-    }
-
-    /**
-     * Idea child ideas coming in future
-     * @return mixed
-     */
-    public function futureIdeaIdeas()
-    {
-        return $this
-            ->hasMany('App\Models\Idea', 'idea_id')
-            ->InFuture()
-            ->whereHas('localisedIdeaDescription')
-            ->isActive();
-    }
-
-    public function getEditUrlAttribute()
-    {
-
     }
 
     public function getIsBlockedAttribute()
@@ -903,14 +882,11 @@ class Idea extends Model
     public function scopeWhereDates($query)
     {
         if (request()->has('date_from')) {
-            return $query->whereHas('ideaDates', function ($query) {
-                $dateFrom = request()->input('date_from');
-                $dateTo = request()->input('date_to');
-                $query
-                    ->whereDate('start_date', '>=', date_format(date_create($dateFrom), 'Y-m-d'))
-                    ->whereDate('start_date', '<=', date_format(date_create($dateTo), 'Y-m-d'));
-
-            });
+            $dateFrom = request()->input('date_from');
+            $dateTo = request()->input('date_to');
+            return $query
+                ->whereDate('start_date', '>=', date_format(date_create($dateFrom), 'Y-m-d'))
+                ->whereDate('start_date', '<=', date_format(date_create($dateTo), 'Y-m-d'));
 
         }
 
