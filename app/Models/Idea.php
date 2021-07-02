@@ -126,6 +126,7 @@ class Idea extends Model
                     ->hasImage()
                     ->isPublished()
                     ->take($itemsCount)
+                    ->groupBy('ideas.id')
                     ->distinct()
                     ->orderByStartDate()
                     ->paginate()
