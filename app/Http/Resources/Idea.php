@@ -40,6 +40,7 @@ class Idea extends JsonResource
                 'intro' => $this->id ? $this->intro : '',
                 'author_hid' => $this->author->hid,
                 'description' => $this->id ? $this->description : '',
+                'date_from' => $this->date_from,
                 'image_url' => $this->imageUrl,
                 'image2x_url' => $this->image2xUrl,
                 'place_id' => $this->place_id,
