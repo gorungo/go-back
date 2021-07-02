@@ -120,7 +120,7 @@ class Idea extends Model
             0, function () use ($itemsCount, $request) {
                 return self::joinPlace()
                     ->joinIdeaDates()
-                    ->select(['ideas.*', DB::raw('idea_dates.start_date AS idea_start_date)'), 'osms.coordinates'])
+                    ->select(['ideas.*', 'idea_dates.start_date', 'osms.coordinates'])
                     ->inFuture()
                     ->whereFilters()
                     ->hasImage()
@@ -852,7 +852,7 @@ class Idea extends Model
         return $query->leftJoin('idea_dates', function ($join) {
         $join
             ->on('ideas.id', '=', 'idea_dates.idea_id')
-            ->whereRaw("TO_DAYS(NOW()) <= TO_DAYS(`idea_dates.start_date`)");
+            ->whereRaw("TO_DAYS(NOW()) <= TO_DAYS(`idea_dates.start_date`)")->take(1);
     });
     }
 
@@ -878,7 +878,7 @@ class Idea extends Model
      */
     public function scopeInFuture($query)
     {
-        return $query->whereRaw("TO_DAYS(NOW()) <= TO_DAYS(`idea_start_date`)");
+        return $query->whereRaw("TO_DAYS(NOW()) <= TO_DAYS(`start_date`)");
     }
 
     /**
