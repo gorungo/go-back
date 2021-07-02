@@ -756,7 +756,7 @@ class Idea extends Model
 
     public function scopeOrderByStartDate($query)
     {
-        $query->orderBy('idea_start_date', 'asc');
+        $query->orderBy('start_date', 'asc');
     }
 
 
