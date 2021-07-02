@@ -852,7 +852,7 @@ class Idea extends Model
         return $query->leftJoin('idea_dates', function ($join) {
         $join
             ->on('ideas.id', '=', 'idea_dates.idea_id')
-            ->whereRaw("TO_DAYS(NOW()) <= TO_DAYS(`idea_dates.start_date`)")->take(1);
+            ->whereRaw("TO_DAYS(NOW()) <= TO_DAYS(`start_date`)")->take(1);
     });
     }
 
