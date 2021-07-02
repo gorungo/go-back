@@ -77,7 +77,7 @@ class Idea extends Model
                     ->isPublished()
                     ->distinct()
                     ->orderByStartDate()
-                    ->select(['ideas.*', 'osms.coordinates'])
+                    ->select(['ideas.*', 'idea_dates.start_date','osms.coordinates'])
                     ->paginate();
             });
     }
@@ -875,7 +875,7 @@ class Idea extends Model
      */
     public function scopeInFuture($query)
     {
-        return $query->whereRaw("TO_DAYS(NOW()) <= TO_DAYS(`idea_dates.start_date`)");
+        return $query->whereRaw("TO_DAYS(NOW()) <= TO_DAYS(`start_date`)");
     }
 
     /**
