@@ -848,7 +848,7 @@ class Idea extends Model
 
     public function scopeJoinIdeaDates($query)
     {
-        return $query->join('idea_dates', function ($join) {
+        return $query->leftJoin('idea_dates', function ($join) {
         $join
             ->on('ideas.id', '=', 'idea_dates.idea_id')
             ->whereRaw("TO_DAYS(NOW()) <= TO_DAYS(`start_date`)");
