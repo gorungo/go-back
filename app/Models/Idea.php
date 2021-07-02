@@ -126,7 +126,8 @@ class Idea extends Model
                     ->hasImage()
                     ->isPublished()
                     ->take($itemsCount)
-                    ->distinct()
+                    ->groupBy('ideas.id')
+                    //->distinct()
                     ->orderByStartDate()
                     ->paginate()
                     ->loadMissing($request->has('include') && $request->input('include') != '' ? explode(',',
