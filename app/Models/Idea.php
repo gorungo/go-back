@@ -120,13 +120,14 @@ class Idea extends Model
             0, function () use ($itemsCount, $request) {
                 return self::joinPlace()
                     ->joinIdeaDates()
+                    ->select(['ideas.*', DB::raw('MAX(idea_dates.start_date) AS idea_start_date)'), 'osms.coordinates'])
                     ->inFuture()
                     ->whereFilters()
                     ->hasImage()
                     ->isPublished()
                     ->take($itemsCount)
+                    ->groupBy('ideas.id')
                     ->distinct()
-                    ->select(['ideas.*', DB::raw('MAX(idea_dates.start_date) AS idea_start_date)'), 'osms.coordinates'])
                     ->orderByStartDate()
                     ->paginate()
                     ->loadMissing($request->has('include') && $request->input('include') != '' ? explode(',',
