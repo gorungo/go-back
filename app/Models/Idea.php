@@ -97,6 +97,7 @@ class Idea extends Model
             0, function () use ($request, $placeId, $category, $itemsCount) {
                 return self::whereCategory($category)
                     ->wherePlaceId($placeId)
+                    ->joinIdeaDates()
                     ->joinDescription()
                     ->inFuture()
                     ->take($itemsCount)
@@ -118,13 +119,14 @@ class Idea extends Model
         return Cache::tags(['ideas'])->remember('ideas_widget_'.$itemsCount.'_'.request()->getQueryString(),
             0, function () use ($itemsCount, $request) {
                 return self::joinPlace()
+                    ->joinIdeaDates()
                     ->inFuture()
                     ->whereFilters()
                     ->hasImage()
                     ->isPublished()
                     ->take($itemsCount)
                     ->distinct()
-                    ->select(['ideas.*', 'osms.coordinates'])
+                    ->select(['ideas.*', 'idea_dates.start_date', 'osms.coordinates'])
                     ->paginate()
                     ->loadMissing($request->has('include') && $request->input('include') != '' ? explode(',',
                         $request->include) : []);
