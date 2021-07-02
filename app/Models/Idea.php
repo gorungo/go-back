@@ -126,7 +126,7 @@ class Idea extends Model
                     ->isPublished()
                     ->take($itemsCount)
                     ->distinct()
-                    ->select(['ideas.*', 'idea_dates.start_date', 'osms.coordinates'])
+                    ->select(['ideas.*', 'osms.coordinates'])
                     ->paginate()
                     ->loadMissing($request->has('include') && $request->input('include') != '' ? explode(',',
                         $request->include) : []);
