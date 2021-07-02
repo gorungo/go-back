@@ -70,11 +70,13 @@ class Idea extends Model
                 }
                 return self::whereCategory($category)
                     ->joinPlace()
+                    ->joinIdeaDates()
                     ->inFuture()
                     ->whereFilters()
                     ->hasImage()
                     ->isPublished()
                     ->distinct()
+                    ->orderByStartDate()
                     ->select(['ideas.*', 'osms.coordinates'])
                     ->paginate();
             });
@@ -749,6 +751,12 @@ class Idea extends Model
         return $query->whereNotNull('ideas.approved_at');
     }
 
+    public function scopeOrderByStartDate($query)
+    {
+        $query->orderByDate('idea_dates.start_date', 'asc');
+    }
+
+
     /**
      * Item is published by owner
      * @param $query
@@ -836,6 +844,15 @@ class Idea extends Model
         return $query;
     }
 
+    public function scopeJoinIdeaDates($query)
+    {
+        return $query->join('idea_dates', function ($join) {
+        $join
+            ->on('ideas.id', '=', 'idea_dates.idea_id')
+            ->whereRaw("TO_DAYS(NOW()) <= TO_DAYS(`idea_dates.start_date`)");
+    });
+    }
+
     public function scopeWhereTags($query, array $tags)
     {
         return $query->withAllTags($tags);
@@ -858,9 +875,7 @@ class Idea extends Model
      */
     public function scopeInFuture($query)
     {
-        return $query->whereHas('ideaDates', function ($query) {
-            $query->whereRaw("TO_DAYS(NOW()) <= TO_DAYS(`start_date`)");
-        })->orDoesntHave('ideaDates');
+        return $query->whereRaw("TO_DAYS(NOW()) <= TO_DAYS(`idea_dates.start_date`)");
     }
 
     /**
