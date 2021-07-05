@@ -106,9 +106,19 @@ class AuthController extends Controller
         $pvs = new PhoneVerificationService();
         $pvs->test = false;
 
+        if($verification = $pvs->createVerificationAndSendCode($request->input('data.phone'))){
+            return response()->json([
+                'phone_verification' => $verification
+            ]);
+        }
+
         return response()->json([
-            'phone_verification' => $pvs->createVerificationAndSendCode($request->input('data.phone'))
-        ]);
+            'phone_verification' => null,
+            'type' => 'error',
+            'message' => 'service not available'
+        ], 503);
+
+
     }
 
     /**
