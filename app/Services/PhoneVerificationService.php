@@ -25,7 +25,7 @@ class PhoneVerificationService
             $data->to = $phone;
             $data->text = "Gorungo code: " . $newCode;
 
-            if ($this->test) {
+            if ($smsConfig['test']) {
                 $data->test = 1;
             }
 

@@ -24,8 +24,8 @@ class PhoneVerification extends JsonResource
             'id' => $this->id ,
 
             'attributes' => [
-                'attempts' => $this->title,
-                'code' => $this->code,
+                'attempts' => $this->attempts,
+                //'code' => $this->code,
                 'exp_date' => $this->exp_date,
             ],
         ];

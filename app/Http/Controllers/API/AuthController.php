@@ -104,7 +104,7 @@ class AuthController extends Controller
     public function sendVerificationCode(SendVerificationCodeRequest $request)
     {
         $pvs = new PhoneVerificationService();
-        $pvs->test = true;
+        $pvs->test = false;
 
         return response()->json([
             'phone_verification' => $pvs->createVerificationAndSendCode($request->input('data.phone'))

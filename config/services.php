@@ -31,7 +31,11 @@ return [
     ],
 
     'smsru' => [
-        'active' => env('SMSRU_ACTIVE'),
+        // service activity
+        'active' => env('SMSRU_ACTIVE', false),
+        // sms.ru create sms code but not send to user
+        'test' => env('SMSRU_TEST', true),
+        // sms.ru service code
         'code' => env('SMSRU_CODE'),
     ],
 
