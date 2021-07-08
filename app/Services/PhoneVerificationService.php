@@ -30,13 +30,16 @@ class PhoneVerificationService
             }
 
             $smsResult = $sms->send_one($data);
-
-            PhoneVerification::wherePhone($phone)->IsActive()->delete();
-            return new PhoneVerificationResource(PhoneVerification::createVerification($phone, $newCode, $smsResult->sms_id ?? 0));
+            return PhoneVerification::createVerification($phone, $newCode, $smsResult->sms_id ?? 0);
         }
 
         return false;
 
+    }
+
+    public function phoneActiveVerification($phone) : PhoneVerification
+    {
+        return PhoneVerification::wherePhone($phone)->IsActive()->first();
     }
 
     public function checkVerificationCode($data)

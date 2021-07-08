@@ -8,13 +8,13 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\SendVerificationCodeRequest;
 use App\Http\Requests\Auth\CheckVerificationCodeRequest;
 
-use App\Models\Profile;
 use App\Models\User;
 use App\Services\PhoneVerificationService;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\User as UserResource;
-use Illuminate\Support\Facades\Log;
+use App\Http\Resources\PhoneVerification as PhoneVerificationResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -34,9 +34,10 @@ class AuthController extends Controller
     /**
      * Get a JWT via given credentials.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param  LoginRequest  $request
+     * @return JsonResponse
      */
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->only(['email', 'password']);
         if ( !$token = auth()->attempt($credentials)) {
@@ -46,7 +47,8 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
-    public function register(RegisterRequest $request) {
+    public function register(RegisterRequest $request): JsonResponse
+    {
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|confirmed|min:6',
@@ -68,9 +70,9 @@ class AuthController extends Controller
     /**
      * Get the authenticated User.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function me()
+    public function me(): JsonResponse
     {
         return response()->json(new UserResource(auth()->user()));
     }
@@ -78,9 +80,9 @@ class AuthController extends Controller
     /**
      * Log the user out (Invalidate the token).
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function logout()
+    public function logout(): JsonResponse
     {
         auth()->logout();
         return response()->json(['message' => 'Successfully logged out']);
@@ -89,9 +91,9 @@ class AuthController extends Controller
     /**
      * Refresh a token.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function refresh()
+    public function refresh(): JsonResponse
     {
         return $this->respondWithToken(auth()->refresh());
     }
@@ -99,16 +101,27 @@ class AuthController extends Controller
     /**
      * Send phone validation sms.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param  SendVerificationCodeRequest  $request
+     * @return JsonResponse
      */
-    public function sendVerificationCode(SendVerificationCodeRequest $request)
+    public function sendVerificationCode(SendVerificationCodeRequest $request): JsonResponse
     {
         $pvs = new PhoneVerificationService();
         $pvs->test = false;
 
+        $activeVerification = $pvs->phoneActiveVerification($request->input('data.phone'));
+
+        if($activeVerification){
+            return response()->json([
+                'type' => 'old',
+                'phone_verification' => new PhoneVerificationResource($activeVerification)
+            ]);
+        }
+
         if($verification = $pvs->createVerificationAndSendCode($request->input('data.phone'))){
             return response()->json([
-                'phone_verification' => $verification
+                'type' => 'new',
+                'phone_verification' => new PhoneVerificationResource($verification)
             ]);
         }
 
@@ -124,9 +137,38 @@ class AuthController extends Controller
     /**
      * Send phone validation sms.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param  SendVerificationCodeRequest  $request
+     * @return JsonResponse
      */
-    public function checkVerificationCode(CheckVerificationCodeRequest $request)
+    public function getActiveVerification(SendVerificationCodeRequest $request): JsonResponse
+    {
+        $pvs = new PhoneVerificationService();
+        $pvs->test = false;
+
+        $activeVerification = $pvs->phoneActiveVerification($request->input('data.phone'));
+
+        if($activeVerification){
+            return response()->json([
+                'type' => 'old',
+                'phone_verification' => new PhoneVerificationResource($activeVerification)
+            ]);
+        }
+
+        return response()->json([
+            'phone_verification' => null,
+            'type' => 'error',
+            'message' => 'service not available'
+        ], 503);
+
+    }
+
+    /**
+     * Send phone validation sms.
+     *
+     * @param  CheckVerificationCodeRequest  $request
+     * @return JsonResponse
+     */
+    public function checkVerificationCode(CheckVerificationCodeRequest $request): JsonResponse
     {
         $pvs = new PhoneVerificationService();
 
@@ -161,7 +203,7 @@ class AuthController extends Controller
         return response()->json([
             'type' => 'false',
             'message' => 'code not valid'
-        ], 200);
+        ]);
     }
 
     /**
@@ -169,9 +211,9 @@ class AuthController extends Controller
      *
      * @param  string $token
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken(string $token): JsonResponse
     {
         return response()->json([
             'token' => $token,
