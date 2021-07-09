@@ -47,8 +47,8 @@ Route::group(['prefix' => 'v1'], function() {
         Route::post('me', [AuthController::class, 'me']);
 
         Route::get('phoneVerification', [AuthController::class, 'getActiveVerification']);
-        Route::post('phoneVerification/sendVerificationCode', [AuthController::class, 'sendVerificationCode']);
-        Route::post('phoneVerification/checkVerificationCode', [AuthController::class, 'checkVerificationCode']);
+        Route::post('phoneVerification/create', [AuthController::class, 'sendVerificationCode']);
+        Route::post('phoneVerification/check', [AuthController::class, 'checkVerificationCode']);
 
     });
 
