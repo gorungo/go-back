@@ -37,7 +37,7 @@ class PhoneVerificationService
 
     }
 
-    public function phoneActiveVerification($phone) : PhoneVerification
+    public function phoneActiveVerification($phone) : ?PhoneVerification
     {
         return PhoneVerification::wherePhone($phone)->IsActive()->first();
     }
