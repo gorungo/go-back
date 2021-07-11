@@ -77,7 +77,7 @@ class Profile extends Model
     {
         $storeData = $request->input('data.attributes');
         $storeData['phone'] = Helper::clearPhone($storeData['phone']);
-        $this->update($request->input($storeData));
+        $this->update($storeData);
         $this->saveRelationships($request);
         return $this;
     }
