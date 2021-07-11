@@ -112,4 +112,8 @@ return [
 
     'password_timeout' => 10800,
 
+    'email_auth' => [
+        'active' => env('AUTH_EMAIL_ACTIVE', true)
+    ]
+
 ];

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\ConfigController;
 use App\Http\Controllers\API\CurrencyController;
 use App\Http\Controllers\API\FilterController;
 use App\Http\Controllers\API\IdeaController;
@@ -51,6 +52,10 @@ Route::group(['prefix' => 'v1'], function() {
         Route::post('phoneVerification/checkCode', [AuthController::class, 'checkVerificationCode']);
 
     });
+
+    //Get user ideas
+    Route::get('/config', [ConfigController::class, 'index'])
+        ->name('api.config');
 
     Route::get('/storage-info', function(){
         dd( Storage:: allFiles(request()->input('folder')) );
