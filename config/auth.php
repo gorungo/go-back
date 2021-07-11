@@ -114,6 +114,10 @@ return [
 
     'email_auth' => [
         'active' => env('AUTH_EMAIL_ACTIVE', true)
+    ],
+
+    'phone_auth' => [
+        'active' => env('AUTH_PHONE_ACTIVE', true)
     ]
 
 ];
