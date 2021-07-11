@@ -53,7 +53,7 @@ Route::group(['prefix' => 'v1'], function() {
 
     });
 
-    //Get user ideas
+    //Get app config to frontend
     Route::get('/config', [ConfigController::class, 'index'])
         ->name('api.config');
 
