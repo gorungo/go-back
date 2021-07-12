@@ -46,7 +46,6 @@ class PublishIdea extends FormRequest
 
             //'relationships.itineraries.*.attributes.title' => 'required',
             //'relationships.itineraries.*.attributes.description' => 'required',
-
             'relationships.dates' => 'required|array|nullable',
             'relationships.dates.*.attributes.start_date' => 'required|date',
             'relationships.dates.*.attributes.start_time' => 'sometimes|nullable|min:5|max:8',
