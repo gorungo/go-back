@@ -22,7 +22,9 @@ class ConfigController extends Controller
      */
     public function index()
     {
-        return response()->json(['config' => $this->config->getConfig(request()->has('section') ? request()->input('section') : null)]);
+        return response()->json(
+            $this->config->getConfig(request()->has('section') ? request()->input('section') : null)
+        );
     }
 
 }
