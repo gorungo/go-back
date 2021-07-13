@@ -7,7 +7,7 @@ use App\Http\Requests\Idea\PublishIdea;
 use App\Http\Requests\Idea\StoreIdea;
 use App\Http\Requests\Photo\UploadPhoto;
 use App\Http\Resources\Idea as IdeaResource;
-use App\Http\Resources\IdeaListing as IdeaListingResource;
+use App\Http\Resources\IdeaListing as IdeaSimpleResource;
 use App\Models\Idea;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -32,52 +32,57 @@ class IdeaController extends Controller
      */
     public function index(Request $request)
     {
+        $ideas = null;
+
         if ($request->has('section_name')) {
             switch ($request->section_name) {
                 case "nearby":
-                    return IdeaListingResource::collection(
-                        Idea::widgetMainItemsList($request)
-                    );
+                    $ideas = Idea::widgetMainItemsList($request);
                     break;
 
-
                 case "base":
-                    return IdeaListingResource::collection(
-                        Idea::widgetMainItemsList($request)
-                    );
+                    $ideas = Idea::widgetMainItemsList($request);
                     break;
 
 
                 case "popular":
-                    return IdeaListingResource::collection(Idea::widgetMainItemsList($request));
+                    $ideas = Idea::widgetMainItemsList($request);
                     break;
 
                 default:
                     break;
             }
         }
-        if ($request->has('q')) {
+        else if ($request->has('q')) {
             switch ($request->q) {
                 case 'not-moderated':
-                    return IdeaResource::collection(Idea::notModerated()->take($request->limit)->get()->loadMissing([
+                    $ideas = Idea::notModerated()->take($request->limit)->get()->loadMissing([
                         'ideaPrice',
                         'ideaPlaces',
                         'ideaDates',
                         'ideaParentIdea',
                         'ideaCategories',
                         'ideaItineraries'
-                    ]));
+                    ]);
+                    break;
 
                 default:
                     break;
             }
         }
-        // base listing
+        else{
+            // base listing
+            $ideas = Idea::itemsList($request)->loadMissing(request()->has('include') && request()->input('include') != '' ? explode(',',
+                request()->include) : []);
+        }
 
-        return IdeaListingResource::collection(
-            Idea::itemsList($request)->loadMissing(request()->has('include') && request()->input('include') != '' ? explode(',',
-                    request()->include) : [])
-        );
+
+        if(request()->has('simple_resource') && request()->input('simple_resource') == '1')
+        {
+            return IdeaSimpleResource::collection($ideas);
+        }
+
+        return IdeaResource::collection($ideas);
     }
 
     /**
