@@ -38,6 +38,7 @@ class IdeaListing extends JsonResource
                 'place_title' => $this->ideaPlace ? $this->ideaPlace->title : '',
                 'author_hid' => $this->author->hid,
                 'author_intro' => $this->author->profile->description,
+                'author_display_name' => $this->author->displayName,
                 'author_image_url' => $this->author->imageUrl,
             ],
         ];
