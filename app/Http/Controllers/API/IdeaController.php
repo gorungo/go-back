@@ -7,6 +7,7 @@ use App\Http\Requests\Idea\PublishIdea;
 use App\Http\Requests\Idea\StoreIdea;
 use App\Http\Requests\Photo\UploadPhoto;
 use App\Http\Resources\Idea as IdeaResource;
+use App\Http\Resources\IdeaListing as IdeaListingResource;
 use App\Models\Idea;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -34,21 +35,21 @@ class IdeaController extends Controller
         if ($request->has('section_name')) {
             switch ($request->section_name) {
                 case "nearby":
-                    return IdeaResource::collection(
+                    return IdeaListingResource::collection(
                         Idea::widgetMainItemsList($request)
                     );
                     break;
 
 
                 case "base":
-                    return IdeaResource::collection(
+                    return IdeaListingResource::collection(
                         Idea::widgetMainItemsList($request)
                     );
                     break;
 
 
                 case "popular":
-                    return IdeaResource::collection(Idea::widgetMainItemsList($request));
+                    return IdeaListingResource::collection(Idea::widgetMainItemsList($request));
                     break;
 
                 default:
@@ -71,9 +72,9 @@ class IdeaController extends Controller
                     break;
             }
         }
-        // listing
+        // base listing
 
-        return IdeaResource::collection(
+        return IdeaListingResource::collection(
             Idea::itemsList($request)->loadMissing(request()->has('include') && request()->input('include') != '' ? explode(',',
                     request()->include) : [])
         );
