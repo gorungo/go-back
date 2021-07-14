@@ -416,16 +416,25 @@ class Idea extends Model
     private function saveCategories($categories): void
     {
         $categoriesIds = [];
+        $firstCategoryId = null;
 
-        if ($categories) {
+        if ($categories && count($categories) > 0) {
+            $firstCategoryId = $categories[0]['id'];
             foreach ($categories as $category) {
                 $categoriesIds[] = $category['id'];
             }
-
         }
 
         if (count($categoriesIds) > 0) {
             $this->ideaCategories()->sync($categoriesIds);
+            // set main category
+            $category = Category::find($firstCategoryId);
+            $parentCategory = Category::getMainCategoryOfCategory($category);
+            if($parentCategory){
+                $this->main_category_id = $parentCategory->id;
+                $this->save();
+            }
+
         }
 
     }

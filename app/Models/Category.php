@@ -188,6 +188,15 @@ class Category extends Model
 
     }
 
+    public static function getMainCategoryOfCategory(Category $category)
+    {
+        while($category->categoryParent){
+            $category = $category->categoryParent;
+        }
+
+        return $category;
+    }
+
     public function allCategories()
     {
         return Category::isActive()->get();
@@ -501,7 +510,6 @@ class Category extends Model
 
     public function scopeWhereParentSlug($query, $parentSlug)
     {
-
         $parentId = Category::where('slug', $parentSlug)->where('active', '1')->first();
         return $query->where('parent_id', $parentId);
     }
