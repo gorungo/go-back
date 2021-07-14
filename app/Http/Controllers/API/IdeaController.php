@@ -37,20 +37,13 @@ class IdeaController extends Controller
         if ($request->has('section_name')) {
             switch ($request->section_name) {
                 case "nearby":
-                    $ideas = Idea::widgetMainItemsList($request);
-                    break;
-
-                case "base":
-                    $ideas = Idea::widgetMainItemsList($request);
-                    break;
-
-
-                case "popular":
-                    $ideas = Idea::widgetMainItemsList($request);
+                    $ideas = App\Services\IdeaService::widgetMainItemsList($request, $request->limit);
                     break;
 
                 default:
+                    $ideas = App\Services\IdeaService::widgetMainItemsList($request, $request->limit);
                     break;
+
             }
         }
         else if ($request->has('q')) {
@@ -72,7 +65,7 @@ class IdeaController extends Controller
         }
         else{
             // base listing
-            $ideas = Idea::itemsList($request)->loadMissing(request()->has('include') && request()->input('include') != '' ? explode(',',
+            $ideas = App\Services\IdeaService::itemsList($request)->loadMissing(request()->has('include') && request()->input('include') != '' ? explode(',',
                 request()->include) : []);
         }
 

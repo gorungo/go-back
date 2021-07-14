@@ -54,36 +54,6 @@ class Idea extends Model
     }
 
     /**
-     * Ideas main list
-     *
-     * @param  Request  $request
-     * @param  null  $activeCategory
-     * @return mixed
-     */
-    public static function itemsList(Request $request)
-    {
-        return Cache::tags(['ideas'])->remember('ideas_'.request()->getQueryString(),
-            10, function () use ($request) {
-                $category = null;
-                if ($request->has('category_id') && (int) $request->category_id) {
-                    $category = Category::find($request->category_id);
-                }
-
-                return self::whereCategory($category)
-                    ->select(['ideas.*', 'idea_dates.start_date', 'osms.coordinates'])
-                    ->joinPlace()
-                    ->joinIdeaDates()
-                    ->inFuture()
-                    ->whereFilters()
-                    ->hasImage()
-                    ->isPublished()
-                    ->distinct()
-                    ->orderByStartDate()
-                    ->paginate();
-            });
-    }
-
-    /**
      * Get ideas to show on main page sections
      *
      * @param  Request  $request
@@ -104,34 +74,6 @@ class Idea extends Model
                     ->inFuture()
                     ->groupBy('ideas.id')
                     ->take($itemsCount)
-                    ->orderByStartDate()
-                    ->get()
-                    ->loadMissing($request->has('include') && $request->input('include') != '' ? explode(',',
-                        $request->include) : []);
-            });
-    }
-
-    /**
-     * Get ideas to show on main page sections
-     *
-     * @param  Request  $request
-     * @param  int  $itemsCount
-     * @return mixed
-     */
-    public static function widgetMainItemsList(Request $request, $itemsCount = 6)
-    {
-        return Cache::tags(['ideas'])->remember('ideas_widget_'.$itemsCount.'_'.request()->getQueryString(),
-            0, function () use ($itemsCount, $request) {
-                return self::joinPlace()
-                    ->joinIdeaDates()
-                    ->select(['ideas.*', 'idea_dates.start_date', 'osms.coordinates'])
-                    ->inFuture()
-                    ->whereFilters()
-                    ->hasImage()
-                    ->isPublished()
-                    ->take($itemsCount)
-                    ->groupBy('ideas.id')
-                    ->distinct()
                     ->orderByStartDate()
                     ->get()
                     ->loadMissing($request->has('include') && $request->input('include') != '' ? explode(',',
@@ -815,6 +757,14 @@ class Idea extends Model
     public function scopeJoinPlace($query)
     {
         return $query->join('osms', 'ideas.place_id', '=', 'osms.id');
+    }
+
+    public function scopeWhereMainCategory($query)
+    {
+        if(request()->has('category_id')){
+            return $query->where('main_category_id', request()->input('category_id'));
+        }
+        return $query;
     }
 
     public function scopeSorting($query)
