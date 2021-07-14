@@ -133,7 +133,7 @@ class Idea extends Model
                     ->groupBy('ideas.id')
                     ->distinct()
                     ->orderByStartDate()
-                    ->paginate()
+                    ->get()
                     ->loadMissing($request->has('include') && $request->input('include') != '' ? explode(',',
                         $request->include) : []);
             });
