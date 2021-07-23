@@ -53,34 +53,6 @@ class Idea extends Model
         return $newIdea;
     }
 
-    /**
-     * Get ideas to show on main page sections
-     *
-     * @param  Request  $request
-     * @param  null  $placeId
-     * @param  null  $category
-     * @param  int  $itemsCount
-     * @return mixed
-     */
-    public static function widgetItemsList(Request $request, $placeId = null, $category = null, $itemsCount = 6)
-    {
-        return Cache::tags(['ideas'])->remember('ideas_widget_'.LocaleMiddleware::getLocale().'_category_'.$category.'_'.request()->getQueryString(),
-            0, function () use ($request, $placeId, $category, $itemsCount) {
-                return self::whereCategory($category)
-                    ->joinIdeaDates()
-                    ->wherePlaceId($placeId)
-                    ->joinIdeaDates()
-                    ->joinDescription()
-                    ->inFuture()
-                    ->groupBy('ideas.id')
-                    ->take($itemsCount)
-                    ->orderByStartDate()
-                    ->get()
-                    ->loadMissing($request->has('include') && $request->input('include') != '' ? explode(',',
-                        $request->include) : []);
-            });
-    }
-
     public static function itemsOfUser(User $user)
     {
         return Cache::tags(['ideas'])->remember('ideas_of_user_'.$user->id.'_'.LocaleMiddleware::getLocale().'_category_',
@@ -290,18 +262,6 @@ class Idea extends Model
     }
 
     /**
-     * Idea child ideas
-     * @return mixed
-     */
-    public function ideaIdeas()
-    {
-        return $this
-            ->hasMany('App\Models\Idea', 'idea_id')
-            ->whereHas('localisedIdeaDescription')
-            ->isActive();
-    }
-
-    /**
      * Get idea actions
      * @param  int  $itemsCount
      * @return mixed
@@ -394,7 +354,6 @@ class Idea extends Model
 
     public function localisedIdeaDescription()
     {
-        //dd(LocaleMiddleware::getLocaleId());
         return $this
             ->hasOne('App\Models\IdeaDescription', 'idea_id', 'id')
             ->where('locale_id', LocaleMiddleware::getLocaleId());
@@ -701,10 +660,14 @@ class Idea extends Model
         return $query->isActive()->isApproved();
     }
 
-    public function scopeWhereCategory($query, Category $activeCategory = null)
+    public function scopeWhereCategory($query)
     {
-        if ($activeCategory) {
-            $childCategories = $activeCategory->allCategoryChildrenArray();
+        $category = null;
+        if (request()->has('category_id') && (int) request()->category_id) {
+            $category = Category::find(request()->category_id);
+        }
+        if ($category) {
+            $childCategories = $category->allCategoryChildrenArray();
             return $query->whereIn('ideas.id', function ($query) use ($childCategories) {
                 $query->select('idea_id')
                     ->from('idea_category')
@@ -712,45 +675,6 @@ class Idea extends Model
             });
         } else {
             return $query;
-        }
-
-    }
-
-    public function scopeWhereCategory3($query, Category $activeCategory = null)
-    {
-
-        if ($activeCategory) {
-
-            $childCategories = $activeCategory->allCategoryChildrenArray();
-
-
-            return $query->whereHas('ideaCategories.categoryChildren', function ($query) use ($childCategories) {
-                $query->whereIn('category_id', $childCategories);
-            });
-        } else {
-            return $query;
-        }
-
-    }
-
-    public function scopeWhereCategory2($query, $category1, $category2, $category3)
-    {
-
-        $activeCategory = ($category3 !== null) ? $category3 : null;
-        $activeCategory = ($category2 !== null && !$activeCategory) ? $category2 : null;
-        $activeCategory = ($category1 !== null && !$activeCategory) ? $category1 : null;
-
-        if ($activeCategory) {
-
-            $activeCategoryId = Category::where('slug', $activeCategory)->pluck('id')->first();
-
-            return $query->select('idea.*', 'idea_category.category_id')->join('idea_category', 'idea.id',
-                'idea_category.idea_id')->where('category_id', $activeCategoryId);
-
-        } else {
-
-            return $query;
-
         }
 
     }
@@ -828,6 +752,7 @@ class Idea extends Model
     public function scopeWhereFilters($query)
     {
         return $query
+            ->whereCategory()
             ->WherePlace()
             ->WhereDates()
             ->WherePrices();

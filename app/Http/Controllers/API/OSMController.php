@@ -8,16 +8,23 @@ use App\Http\Middleware\LocaleMiddleware;
 use App\Http\Requests\OSM\Store;
 use App\Http\Resources\OSM as OSMResource;
 use App\Models\OSM;
+use App\Services\OSMService;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Request;
 
 class OSMController extends Controller
 {
     protected $osm;
+    protected $OSMService;
 
     public function __construct(OSM $osm)
     {
         $this->osm = $osm;
+    }
+
+    public function index(Request $request)
+    {
+        return response()->json(OSMService::popular());
     }
 
     public function search(Request $request)

@@ -22,13 +22,8 @@ class IdeaService
     {
         return Cache::tags(['ideas'])->remember('ideas_'.request()->getQueryString(),
             10, function () use ($request) {
-                $category = null;
-                if ($request->has('category_id') && (int) $request->category_id) {
-                    $category = Category::find($request->category_id);
-                }
 
-                return Idea::whereCategory($category)
-                    ->select(['ideas.*', 'idea_dates.start_date', 'osms.coordinates'])
+                return Idea::select(['ideas.*', 'idea_dates.start_date', 'osms.coordinates'])
                     ->joinPlace()
                     ->joinIdeaDates()
                     ->inFuture()
@@ -37,7 +32,7 @@ class IdeaService
                     ->isPublished()
                     ->distinct()
                     ->orderByStartDate()
-                    ->paginate();
+                    ->paginate($request->limit);
             });
     }
 
@@ -53,7 +48,6 @@ class IdeaService
         return Cache::tags(['ideas'])->remember('ideas_widget_'.$itemsCount.'_'.request()->getQueryString(),
             60, function () use ($itemsCount, $request) {
                 return Idea::joinPlace()
-                    ->whereMainCategory()
                     ->joinIdeaDates()
                     ->select(['ideas.*', 'idea_dates.start_date', 'osms.coordinates'])
                     ->inFuture()
