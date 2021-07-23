@@ -24,7 +24,7 @@ class OSMController extends Controller
 
     public function popular(Request $request)
     {
-        return response()->json(OSMService::popular());
+        return response()->json(OSMResource::collection(OSMService::popular()));
     }
 
     public function search(Request $request)
