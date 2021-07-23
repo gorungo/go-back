@@ -248,6 +248,7 @@ Route::group(['prefix' => 'v1'], function() {
 
     // OpenStreetMap
     Route::get('/osm/search', [OSMController::class, 'search'])->name('api.osm.search');
+    Route::get('/osm/popular', [OSMController::class, 'popular'])->name('api.osm.popular');
     //Route::get('/osm/{osm}', [OSMController::class, 'view'])->name('api.osm.view');
     Route::post('/osm/saveSelected', [OSMController::class, 'saveSelected'])->name('api.osm.store');
 
