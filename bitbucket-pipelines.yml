@@ -5,5 +5,9 @@ pipelines:
     - step:
         deployment: production
         script:
-          - cat ./deploy.sh | ssh -T gorungo@77.222.60.50
-          - echo "Deploy step finished!"
+          - echo "Deploying to production"
+          - pipe: atlassian/ssh-run:0.2.2
+            variables:
+              SSH_USER: 'root'
+              SERVER: '77.222.60.50'
+              COMMAND: '/var/www/gorungo/goback/deploy.sh'
