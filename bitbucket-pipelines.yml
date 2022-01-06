@@ -8,6 +8,6 @@ pipelines:
           - echo "Deploying to production"
           - pipe: atlassian/ssh-run:0.2.2
             variables:
-              SSH_USER: 'root'
+              SSH_USER: 'gorungo'
               SERVER: '77.222.60.50'
               COMMAND: '/var/www/gorungo/goback/deploy.sh'
