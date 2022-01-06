@@ -1,6 +1,7 @@
 pipelines:
   default:
     - step:
+        name: Deploy to production
         deployment: production
         script:
           - echo "Deploying to production"
