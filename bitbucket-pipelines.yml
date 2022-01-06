@@ -6,5 +6,4 @@ pipelines:
         deployment: production
         script:
           - ssh root@77.222.60.50
-          - sh deploy.sh
           - echo "Deploy step finished"
