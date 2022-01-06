@@ -6,4 +6,4 @@ pipelines:
         deployment: production
         script:
           - cat ./deploy.sh | ssh gorungo@77.222.60.50
-          - echo "Deploy step finished"
+          - echo "Deploy step finished!"
