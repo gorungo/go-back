@@ -157,7 +157,7 @@ Route::group(['prefix' => 'v1'], function() {
 
         //Upload and set main photo
         Route::post('/itineraries/{itinerary}/photo', [PhotoItineraryController::class, 'uploadMain'])
-            ->name('api.itineraries.photos_upload');
+            ->name('api.itineraries.photos_upload_main');
 
         //Set item main photos
         Route::patch('/itineraries/{itinerary}/photos/{photo}/set_main', [PhotoItineraryController::class, 'setMain'])
