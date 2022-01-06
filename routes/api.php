@@ -175,19 +175,19 @@ Route::group(['prefix' => 'v1'], function() {
 
         //Get listing of photos
         Route::get('/places/{place}/photos', [PhotoPlaceController::class, 'index'])
-            ->name('api.ideas.photos_index');
+            ->name('api.places.photos_index');
 
         //Upload photo
         Route::post('/places/{place}/photos', [PhotoPlaceController::class, 'upload'])
-            ->name('api.ideas.photos_upload');
+            ->name('api.places.photos_upload');
 
         //Set item main photos
         Route::patch('/places/{place}/photos/{photo}/set_main', [PhotoPlaceController::class, 'setMain'])
-            ->name('api.ideas.photos_set_main');
+            ->name('api.places.photos_set_main');
 
         //Delete item main photos
         Route::delete('/places/{place}/photos/{photo}', [PhotoPlaceController::class, 'destroy'])
-            ->name('api.ideas.photos_destroy');
+            ->name('api.places.photos_destroy');
 
 
         /*
