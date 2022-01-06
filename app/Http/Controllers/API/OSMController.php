@@ -22,7 +22,7 @@ class OSMController extends Controller
         $this->osm = $osm;
     }
 
-    public function popular(Request $request)
+    public function popular()
     {
         return response()->json(OSMResource::collection(OSMService::popular()));
     }
