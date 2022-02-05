@@ -7,7 +7,7 @@ use App\Http\Requests\Idea\PublishIdea;
 use App\Http\Requests\Idea\StoreIdea;
 use App\Http\Requests\Photo\UploadPhoto;
 use App\Http\Resources\Idea as IdeaResource;
-use App\Http\Resources\IdeaCollection;
+use App\Http\Resources\IdeaListingCollection;
 use App\Http\Resources\IdeaListing as IdeaListingResource;
 use App\Models\Idea;
 use Illuminate\Http\JsonResponse;
@@ -50,7 +50,7 @@ class IdeaController extends Controller
 
         // base listing
         $ideas = App\Services\IdeaService::itemsList($request);
-        return new IdeaCollection($ideas);
+        return new IdeaListingCollection($ideas);
     }
 
     /**
