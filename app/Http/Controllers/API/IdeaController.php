@@ -7,7 +7,8 @@ use App\Http\Requests\Idea\PublishIdea;
 use App\Http\Requests\Idea\StoreIdea;
 use App\Http\Requests\Photo\UploadPhoto;
 use App\Http\Resources\Idea as IdeaResource;
-use App\Http\Resources\IdeaListing as IdeaSimpleResource;
+use App\Http\Resources\IdeaCollection;
+use App\Http\Resources\IdeaListing as IdeaListingResource;
 use App\Models\Idea;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,13 +29,13 @@ class IdeaController extends Controller
     /**
      * Display a listing of the resource.
      * @param  Request  $request
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Request $request)
     {
         $ideas = null;
-
         if ($request->has('section_name')) {
+
+            // for main page sections
             switch ($request->section_name) {
                 case "nearby":
                     $ideas = App\Services\IdeaService::widgetMainItemsList($request, $request->limit);
@@ -45,37 +46,12 @@ class IdeaController extends Controller
                     break;
 
             }
-        }
-        else if ($request->has('q')) {
-            switch ($request->q) {
-                case 'not-moderated':
-                    $ideas = Idea::notModerated()->take($request->limit)->get()->loadMissing([
-                        'ideaPrice',
-                        'ideaPlaces',
-                        'ideaDates',
-                        'ideaParentIdea',
-                        'ideaCategories',
-                        'ideaItineraries'
-                    ]);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        else{
-            // base listing
-            $ideas = App\Services\IdeaService::itemsList($request)->loadMissing(request()->has('include') && request()->input('include') != '' ? explode(',',
-                request()->include) : []);
+            return IdeaListingResource::collection($ideas);
         }
 
-
-        if(request()->has('simple_resource') && request()->input('simple_resource') == '1')
-        {
-            return IdeaSimpleResource::collection($ideas);
-        }
-
-        return IdeaResource::collection($ideas);
+        // base listing
+        $ideas = App\Services\IdeaService::itemsList($request)->loadMissing(request()->has('include') && request()->input('include') != '' ? explode(',', request()->include) : []);
+        return new IdeaCollection($ideas);
     }
 
     /**
