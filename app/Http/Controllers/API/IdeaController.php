@@ -32,7 +32,6 @@ class IdeaController extends Controller
      */
     public function index(Request $request)
     {
-        $ideas = null;
         if ($request->has('section_name')) {
 
             // for main page sections
@@ -50,7 +49,7 @@ class IdeaController extends Controller
         }
 
         // base listing
-        $ideas = App\Services\IdeaService::itemsList($request)->loadMissing(request()->has('include') && request()->input('include') != '' ? explode(',', request()->include) : []);
+        $ideas = App\Services\IdeaService::itemsList($request);
         return new IdeaCollection($ideas);
     }
 

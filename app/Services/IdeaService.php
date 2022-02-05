@@ -32,6 +32,7 @@ class IdeaService
                     ->isPublished()
                     ->distinct()
                     ->orderByStartDate()
+                    ->with(request()->has('include') && request()->input('include') != '' ? explode(',', request()->include) : [])
                     ->paginate($request->limit);
             });
     }
