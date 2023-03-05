@@ -118,6 +118,31 @@ class OSM extends Model
         return $response ? json_decode($response->getBody()->getContents(), true) : null;
     }
 
+    private function executeYandexMap($uri, $params = [])
+    {
+        $response = null;
+        $client = new Client([
+            'base_uri' => config('yandex_map.base_url'),
+            'cookies' => true,
+        ]);
+
+        try {
+            if ($this->method === 'post') {
+                $response = $client->post($uri, [
+                    'json' => $params,
+                ]);
+            } elseif ($this->method === 'get') {
+                $response = $client->get($uri, [
+                    'query' => $params,
+                ]);
+            }
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+        }
+
+        return $response ? json_decode($response->getBody()->getContents(), true) : null;
+    }
+
     public function search(Request $request)
     {
         $externalSearch = [];
@@ -136,6 +161,49 @@ class OSM extends Model
             ];
             try {
                 $externalSearch = $this->execute('search.php', $params);
+            } catch (Exception $e) {
+                //
+            }
+
+            $result = OSMResource::collection(OSM::findByTitle($request->q, $params))->collection->toArray();
+        }
+
+        foreach ($result as $res){
+            $placeIds[] = $res['place_id'];
+        }
+
+        foreach ($externalSearch as $search){
+            if(!in_array($search['place_id'], $placeIds)){
+                $result[] = $search;
+            }
+        }
+
+        return $result;
+    }
+    public function searchYandex(Request $request)
+    {
+        $externalSearch = [];
+        $placeIds = [];
+        $result = [];
+        // делаем запрос в осм
+        // сохраняем результат в нашу базу
+        // делам запрос в нашу базу
+        // отправляем результат
+
+        if($request->has('q') && $request->q !== ''){
+            $params = [
+                'geocode' => $request->q,
+                'apikey' => $request->q,
+                'format' => 'json',
+                'sco' => 'latlon',
+                'kind' => 'street',
+//                'accept-language' => $request->get('accept-language'),
+            ];
+
+            try {
+                $externalSearch = $this->executeYandexMap('', $params);
+                // response.GeoObjectCollection.featureMember
+                // список мест
             } catch (Exception $e) {
                 //
             }

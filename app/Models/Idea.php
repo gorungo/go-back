@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -157,6 +158,15 @@ class Idea extends Model
     public function ideaPlace(): BelongsTo
     {
         return $this->belongsTo('App\Models\OSM', 'place_id', 'id');
+    }
+
+    public function bookingParams(): HasOne
+    {
+        return $this->hasOne('App\Models\BookingParam')->withDefault([
+            'info' => '',
+            'contacts' => '',
+            'whatsapp' => '',
+        ]);
     }
 
     public function ideaItinerary()
@@ -483,6 +493,22 @@ class Idea extends Model
         $this->save();
     }
 
+    private function saveBookingParams($bookingParams): void
+    {
+        $newPlace = null;
+        if ($bookingParams) {
+            $data = $bookingParams['attributes'];
+            if (isset($bookingParams['id'])) {
+                $this->bookingParams()->update($data);
+            } else {
+                $this->bookingParams()->create($data);
+            }
+        } else {
+            $this->bookingParams()->delete();
+        }
+        $this->save();
+    }
+
     private function savePlacesToVisit($places): void
     {
         $placeIds = [];
@@ -624,6 +650,10 @@ class Idea extends Model
 
             case 'dates' :
                 $this->saveDates($request->input('data'));
+                break;
+
+            case 'booking_params' :
+                $this->saveBookingParams($request->input('data'));
                 break;
         }
     }

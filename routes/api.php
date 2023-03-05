@@ -39,6 +39,10 @@ use Spatie\Permission\Models\Permission;
 
 Route::group(['prefix' => 'v1'], function() {
 
+    Route::get('/test', function (Request $request) {
+        return ['result' => 'ok'];
+    });
+
     Route::group(['prefix' => 'auth', 'namespace' => 'API'], function ($router) {
 
         Route::post('register', [AuthController::class, 'register']);
@@ -84,10 +88,6 @@ Route::group(['prefix' => 'v1'], function() {
 
 
     Route::group(['middleware' => ['auth:api']], function () {
-
-        Route::get('/test', function (Request $request) {
-            return ['result' => 'ok'];
-        });
 
         // profiles
         Route::resource('profiles', ProfileController::class);

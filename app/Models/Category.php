@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Http\Requests\Idea\StoreIdea;
 use DB;
-use App\Http\Requests\Category\StoreCategory;
+use App\Http\Requests\Category\Store;
 use App\Models\Traits\Imageble;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -399,7 +399,7 @@ class Category extends Model
 
     }
 
-    public function createAndSync(StoreCategory $request)
+    public function createAndSync(Store $request)
     {
 
         $createResult = DB::transaction(function () use ($request) {
@@ -444,7 +444,7 @@ class Category extends Model
         return $createResult;
     }
 
-    public function updateAndSync(StoreCategory $request)
+    public function updateAndSync(Store $request)
     {
 
         $updateResult = DB::transaction(function () use ($request) {
@@ -495,7 +495,7 @@ class Category extends Model
 
     }
 
-    private function updateRelationships(StoreCategory $request): void
+    private function updateRelationships(Store $request): void
     {
         //$this->saveCategories($request);
         //$this->saveTags($request);

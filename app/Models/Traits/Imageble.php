@@ -65,12 +65,12 @@ trait Imageble
 
     public function getImageUrlAttribute()
     {
-        return $this->tmbImgPath ? asset($this->tmbImgPath) : null;
+        return $this->tmbImgPath ?: null;
     }
 
     public function getImage2xUrlAttribute()
     {
-        return $this->tmbImg2xPath ? asset($this->tmbImg2xPath) : null;
+        return $this->tmbImg2xPath ?: null;
     }
 
 }

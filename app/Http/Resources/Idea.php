@@ -70,6 +70,7 @@ class Idea extends JsonResource
                 'dates' => $this->id ? DateResource::collection($this->whenLoaded('ideaDates')) : [],
                 'future_dates' => $this->id ? DateResource::collection($this->whenLoaded('futureDates')) : [],
                 'tags' => $this->id ? TaggedResource::collection($this->whenLoaded('tagged')) : [],
+                'booking_params' => new BookingParam($this->whenLoaded('bookingParams')),
             ],
         ];
     }
